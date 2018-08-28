@@ -1,7 +1,7 @@
 # Личный проект «Кэндишоп» [![Build status][travis-image]][travis-url]
 
 * Студент: [Ksenia Gezalova](https://up.htmlacademy.ru/javascript/15/user/469347).
-* Наставник: `Неизвестно`.
+* Наставник: `Дмитрий Маров`.
 
 ---
 
