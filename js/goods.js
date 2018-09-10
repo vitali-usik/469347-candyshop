@@ -64,7 +64,7 @@ var PICTURE_ROUTES = [
   'soda-peanut-grapes.jpg',
   'soda-russian.jpg'
 ];
-var IMG_SRC = 'img/cards/';
+var PATH = 'img/cards/';
 
 var GOOD_INGRIDIENTS = [
   'молоко',
@@ -107,20 +107,21 @@ var MAX_RATING_NUMBER = 900;
 var MIN_ENERGY_VALUE = 70;
 var MAX_ENERGY_VALUE = 500;
 
+var PRICE_AMOUNT_NODE_INDEX = 0;
+var PRICE_WEIGHT_NODE_INDEX = 2;
+
 var catalogCards = document.querySelector('.catalog__cards');
 var basketCards = document.querySelector('.goods__cards');
 
 
 var getRandomElement = function (arr) {
   var randomIndex = Math.floor(Math.random() * arr.length);
-  var randomElement = arr[randomIndex];
-  return randomElement;
+  return arr[randomIndex];
 };
 
 var getRandomValue = function (min, max) {
   var random = min + Math.random() * (max + 1 - min);
-  random = Math.floor(random);
-  return random;
+  return Math.floor(random);
 };
 
 var getRandomContent = function (contents) {
@@ -132,13 +133,13 @@ var getRandomContent = function (contents) {
 };
 
 var getRandomBoolean = function () {
-  return getRandomValue(0, 1) === 1 ? true : false;
+  return getRandomValue(0, 1) === 1;
 };
 
 var createGoods = function (count) {
   var goods = [];
   for (var j = 0; j < count; j++) {
-    goods.push({'name': GOOD_NAMES[j], 'picture': IMG_SRC + getRandomElement(PICTURE_ROUTES), 'amount': getRandomValue(MIN_VALUE_AMOUNT, MAX_VALUE_AMOUNT), 'price': getRandomValue(MIN_VALUE_PRICE, MAX_VALUE_PRICE), 'weight': getRandomValue(MIN_VALUE_WEIGHT, MAX_VALUE_WEIGHT), 'rating': {'value': getRandomValue(MIN_RATING_VALUE, MAX_RATING_VALUE), 'number': getRandomValue(MIN_RATING_NUMBER, MAX_RATING_NUMBER)}, 'nutritionFacts': {'sugar': getRandomBoolean(), 'energy': getRandomValue(MIN_ENERGY_VALUE, MAX_ENERGY_VALUE), 'contents': getRandomContent(GOOD_INGRIDIENTS)}});
+    goods.push({'name': GOOD_NAMES[j], 'picture': PATH + getRandomElement(PICTURE_ROUTES), 'amount': getRandomValue(MIN_VALUE_AMOUNT, MAX_VALUE_AMOUNT), 'price': getRandomValue(MIN_VALUE_PRICE, MAX_VALUE_PRICE), 'weight': getRandomValue(MIN_VALUE_WEIGHT, MAX_VALUE_WEIGHT), 'rating': {'value': getRandomValue(MIN_RATING_VALUE, MAX_RATING_VALUE), 'number': getRandomValue(MIN_RATING_NUMBER, MAX_RATING_NUMBER)}, 'nutritionFacts': {'sugar': getRandomBoolean(), 'energy': getRandomValue(MIN_ENERGY_VALUE, MAX_ENERGY_VALUE), 'contents': getRandomContent(GOOD_INGRIDIENTS)}});
   }
   return goods;
 };
@@ -154,12 +155,12 @@ var createCard = function (item) {
   cardElement.querySelector('.card__title').textContent = item.name;
 
   var price = cardElement.querySelector('.card__price');
-  price.childNodes[0].textContent = item.price + ' ';
-  price.childNodes[2].textContent = '/ ' + item.weight + ' Г';
+  price.childNodes[PRICE_AMOUNT_NODE_INDEX].textContent = item.price + ' ';
+  price.childNodes[PRICE_WEIGHT_NODE_INDEX].textContent = '/ ' + item.weight + ' Г';
 
   checkRating(cardElement, item);
   cardElement.querySelector('.star__count').textContent = item.rating.number;
-  getNutrition(cardElement, item);
+  setNutrition(cardElement, item);
   cardElement.querySelector('.card__composition-list').textContent = item.nutritionFacts.contents;
   return cardElement;
 };
@@ -176,14 +177,14 @@ var checkAvailability = function (element, good) {
 };
 
 var checkRating = function (element, good) {
-  var rating = element.querySelector('.stars__rating');
   if (good.rating.value !== 5) {
+    var rating = element.querySelector('.stars__rating');
     rating.classList.remove('stars__rating--five');
     rating.classList.add('stars__rating--' + NUMBERS[good.rating.value]);
   }
 };
 
-var getNutrition = function (element, good) {
+var setNutrition = function (element, good) {
   var nutrition = element.querySelector('.card__characteristic');
   nutrition.textContent = good.nutritionFacts.sugar ? 'Содержит сахар' : 'Без сахара';
 };
@@ -206,17 +207,20 @@ var getBasketGood = function (item) {
 var renderCards = function (count, block) {
   var goods = createGoods(count);
   var fragment = document.createDocumentFragment();
-  if (block === 'catalog') {
-    goods.forEach(function (good) {
-      fragment.appendChild(createCard(good));
-    });
-  }
-  if (block === 'goods') {
-    goods.forEach(function (good) {
-      fragment.appendChild(getBasketGood(good));
-    });
+  switch (block) {
+    case 'catalog':
+      goods.forEach(function (good) {
+        fragment.appendChild(createCard(good));
+      });
+      break;
+    case 'goods':
+      goods.forEach(function (good) {
+        fragment.appendChild(getBasketGood(good));
+      });
+      break;
   }
   return fragment;
+
 };
 
 
@@ -227,5 +231,4 @@ catalogCards.appendChild(renderCards(GOODS_AMOUNT, 'catalog'));
 basketCards.classList.remove('goods__cards--empty');
 basketCards.querySelector('.goods__card-empty').style.display = 'none';
 basketCards.appendChild(renderCards(GOODS_AMOUNT_BASKET, 'goods'));
-
 
