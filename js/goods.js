@@ -112,7 +112,9 @@ var PRICE_WEIGHT_NODE_INDEX = 2;
 
 var catalogCards = document.querySelector('.catalog__cards');
 var basketCards = document.querySelector('.goods__cards');
+var card = document.querySelector('#card');
 
+var cardBtnFavorite = card.querySelector('.card__btn-favorite');
 
 var getRandomElement = function (arr) {
   var randomIndex = Math.floor(Math.random() * arr.length);
@@ -232,3 +234,9 @@ basketCards.classList.remove('goods__cards--empty');
 basketCards.querySelector('.goods__card-empty').style.display = 'none';
 basketCards.appendChild(renderCards(GOODS_AMOUNT_BASKET, 'goods'));
 
+
+//Uncaught TypeError: Cannot read property 'addEventListener' of null - я не понимаю почему это не работает и что я делаю не так
+cardBtnFavorite.addEventListener('click', function (evt) {
+  evt.preventDefault();
+  cardBtnFavorite.classList.toggle('card__btn-favorite--selected');
+});
