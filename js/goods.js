@@ -110,11 +110,13 @@ var MAX_ENERGY_VALUE = 500;
 var PRICE_AMOUNT_NODE_INDEX = 0;
 var PRICE_WEIGHT_NODE_INDEX = 2;
 
+var catalog = {};
+var basket = {};
+
 var catalogCards = document.querySelector('.catalog__cards');
 var basketCards = document.querySelector('.goods__cards');
-var card = document.querySelector('#card');
 
-var cardBtnFavorite = card.querySelector('.card__btn-favorite');
+var deliveryBlock = document.querySelector('.deliver__toggle');
 
 var getRandomElement = function (arr) {
   var randomIndex = Math.floor(Math.random() * arr.length);
@@ -164,7 +166,54 @@ var createCard = function (item) {
   cardElement.querySelector('.star__count').textContent = item.rating.number;
   setNutrition(cardElement, item);
   cardElement.querySelector('.card__composition-list').textContent = item.nutritionFacts.contents;
+
+  cardElement.addEventListener('click', function (evt) {
+    cardClickHandler(evt, cardElement);
+  });
+
   return cardElement;
+};
+
+var updateAmount = function (itemName, delta) {
+  var item = basket[itemName]['good'];
+  var card = basket[itemName]['card'];
+  item.amount += delta;
+  var amount = card.querySelector('.card-order__count');
+  amount.value = item.amount;
+};
+
+var cardClickHandler = function (evt, element) {
+  if (evt.target.classList.contains('card__btn-composition')) {
+    element.querySelector('.card__composition').classList.toggle('card__composition--hidden');
+  }
+
+  if (evt.target.classList.contains('card__btn-favorite')) {
+    evt.preventDefault();
+    evt.target.classList.toggle('card__btn-favorite--selected');
+  }
+
+  if (evt.target.classList.contains('card__btn')) {
+    evt.preventDefault();
+    var cardName = element.querySelector('.card__title').innerText;
+    var catalogItem = catalog[cardName];
+    if (catalogItem['good'].amount === 0) {
+      console.log('0 goods');
+      return;
+    }
+    if (basket[cardName]) {
+      updateAmount(cardName, 1);
+    } else {
+      addToBasket(cardName);
+    }
+    catalogItem['good'].amount--;
+    var headerBasket = document.querySelector('.main-header__basket');
+    if (headerBasket.innerText === 'В корзине ничего нет') {
+      headerBasket.innerText = 1;
+    } else {
+      headerBasket.textContent++;
+    }
+    checkAvailability(catalogItem['card'], catalogItem['good']);
+  }
 };
 
 var checkAvailability = function (element, good) {
@@ -203,8 +252,21 @@ var getBasketGood = function (item) {
 
   var price = content.querySelector('.card-order__price');
   price.textContent = item.price + ' ₽';
+
+  var amount = content.querySelector('.card-order__count');
+  amount.value = item.amount;
   return content;
 };
+
+var addToBasket = function (itemName) {
+  var good = Object.assign({}, catalog[itemName]['good']);
+  good.amount = 1;
+  var card = getBasketGood(good);
+  basketCards.classList.remove('goods__cards--empty');
+  basketCards.querySelector('.goods__card-empty').style.display = 'none';
+  basketCards.appendChild(card);
+  basket[good.name.toUpperCase()] = {'good': good, 'card': card};
+}
 
 var renderCards = function (count, block) {
   var goods = createGoods(count);
@@ -212,12 +274,16 @@ var renderCards = function (count, block) {
   switch (block) {
     case 'catalog':
       goods.forEach(function (good) {
-        fragment.appendChild(createCard(good));
+        var card = createCard(good);
+        fragment.appendChild(card);
+        catalog[good.name.toUpperCase()] = {'good': good, 'card': card};
       });
       break;
     case 'goods':
       goods.forEach(function (good) {
-        fragment.appendChild(getBasketGood(good));
+        var card = getBasketGood(good);
+        fragment.appendChild(card);
+        basket[good.name.toUpperCase()] = {'good': good, 'card': card};
       });
       break;
   }
@@ -225,18 +291,41 @@ var renderCards = function (count, block) {
 
 };
 
+var deliveryClickHandler = function (evt) {
+  var tab = evt.target.id;
+  console.log(tab);
+  if (tab === '') {
+    return;
+  }
+  if (evt.target.id === 'deliver__courier') {
+    document.querySelector('.deliver__store').classList.add('visually-hidden');
+  } else {
+    document.querySelector('.deliver__courier').classList.add('visually-hidden');
+  }
+  document.querySelector('.' + tab).classList.remove('visually-hidden');
+}
+
+deliveryBlock.addEventListener('click', function (evt) {
+  deliveryClickHandler(evt);
+});
 
 catalogCards.classList.remove('catalog__cards--load');
 catalogCards.querySelector('.catalog__load').classList.add('visually-hidden');
 catalogCards.appendChild(renderCards(GOODS_AMOUNT, 'catalog'));
 
-basketCards.classList.remove('goods__cards--empty');
+/* basketCards.classList.remove('goods__cards--empty');
 basketCards.querySelector('.goods__card-empty').style.display = 'none';
-basketCards.appendChild(renderCards(GOODS_AMOUNT_BASKET, 'goods'));
+basketCards.appendChild(renderCards(GOODS_AMOUNT_BASKET, 'goods')); */
 
+var range = document.querySelector('.range');
 
-//Uncaught TypeError: Cannot read property 'addEventListener' of null - я не понимаю почему это не работает и что я делаю не так
-cardBtnFavorite.addEventListener('click', function (evt) {
-  evt.preventDefault();
-  cardBtnFavorite.classList.toggle('card__btn-favorite--selected');
+range.addEventListener('mouseup', function() {
+  var rangeLine = document.querySelector('.range__filter');
+  var rangeRight = range.querySelector('.range__btn--right');
+  var rangeLeft = range.querySelector('.range__btn--left');
+  var rangeMax = range.querySelector('.range__price--max');
+  var rangeMin = range.querySelector('.range__price--min');
+
+  rangeMax.textContent = Math.ceil(100 * (rangeRight.offsetLeft + rangeRight.offsetWidth)/rangeLine.offsetWidth);
+  rangeMin.textContent = Math.floor(100 * (rangeLeft.offsetLeft)/rangeLine.offsetWidth);
 });
