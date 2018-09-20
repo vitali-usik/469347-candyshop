@@ -1,7 +1,6 @@
 'use strict';
 
 var GOODS_AMOUNT = 26;
-var GOODS_AMOUNT_BASKET = 3;
 var GOOD_NAMES = [
   'Чесночные сливки',
   'Огуречный педант',
@@ -197,7 +196,6 @@ var cardClickHandler = function (evt, element) {
     var cardName = element.querySelector('.card__title').innerText;
     var catalogItem = catalog[cardName];
     if (catalogItem['good'].amount === 0) {
-      console.log('0 goods');
       return;
     }
     if (basket[cardName]) {
@@ -266,7 +264,7 @@ var addToBasket = function (itemName) {
   basketCards.querySelector('.goods__card-empty').style.display = 'none';
   basketCards.appendChild(card);
   basket[good.name.toUpperCase()] = {'good': good, 'card': card};
-}
+};
 
 var renderCards = function (count, block) {
   var goods = createGoods(count);
@@ -293,7 +291,6 @@ var renderCards = function (count, block) {
 
 var deliveryClickHandler = function (evt) {
   var tab = evt.target.id;
-  console.log(tab);
   if (tab === '') {
     return;
   }
@@ -303,7 +300,7 @@ var deliveryClickHandler = function (evt) {
     document.querySelector('.deliver__courier').classList.add('visually-hidden');
   }
   document.querySelector('.' + tab).classList.remove('visually-hidden');
-}
+};
 
 deliveryBlock.addEventListener('click', function (evt) {
   deliveryClickHandler(evt);
@@ -319,13 +316,13 @@ basketCards.appendChild(renderCards(GOODS_AMOUNT_BASKET, 'goods')); */
 
 var range = document.querySelector('.range');
 
-range.addEventListener('mouseup', function() {
+range.addEventListener('mouseup', function () {
   var rangeLine = document.querySelector('.range__filter');
   var rangeRight = range.querySelector('.range__btn--right');
   var rangeLeft = range.querySelector('.range__btn--left');
   var rangeMax = range.querySelector('.range__price--max');
   var rangeMin = range.querySelector('.range__price--min');
 
-  rangeMax.textContent = Math.ceil(100 * (rangeRight.offsetLeft + rangeRight.offsetWidth)/rangeLine.offsetWidth);
-  rangeMin.textContent = Math.floor(100 * (rangeLeft.offsetLeft)/rangeLine.offsetWidth);
+  rangeMax.textContent = Math.ceil(100 * (rangeRight.offsetLeft + rangeRight.offsetWidth) / rangeLine.offsetWidth);
+  rangeMin.textContent = Math.floor(100 * (rangeLeft.offsetLeft) / rangeLine.offsetWidth);
 });
