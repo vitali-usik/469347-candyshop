@@ -187,9 +187,10 @@
     setNutrition(cardElement, item);
     cardElement.querySelector('.card__composition-list').textContent = item.nutritionFacts.contents;
 
-    cardElement.addEventListener('click', function (evt) {
+    /* cardElement.addEventListener('click', function (evt) {
       cardClickHandler(evt, cardElement);
-    });
+    }); */
+    cardElement.addEventListener('click', cardClickHandler);
 
     return cardElement;
   };
@@ -226,16 +227,16 @@
     amount.value = item.amount;
   };
 
-  var cardClickHandler = function (evt, element) {
+  var cardClickHandler = function (evt) {
     evt.preventDefault();
     var target = evt.target;
     if (target.classList.contains('card__btn-composition')) {
-      element.querySelector('.card__composition').classList.toggle('card__composition--hidden');
+      evt.currentTarget.querySelector('.card__composition').classList.toggle('card__composition--hidden');
     } else if (target.classList.contains('card__btn-favorite')) {
       target.classList.toggle('card__btn-favorite--selected');
       target.blur();
     } else if (target.classList.contains('card__btn')) {
-      var cardName = element.querySelector('.card__title').innerText;
+      var cardName = evt.currentTarget.querySelector('.card__title').innerText;
       var catalogItem = catalog[cardName];
       if (catalogItem['good'].amount === 0) {
         return;
