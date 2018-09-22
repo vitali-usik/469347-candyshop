@@ -1,6 +1,6 @@
 'use strict';
 
-
+// находим блок с оплатой и все соответствующие ему инпуты
 var paymentCard = document.querySelector('.payment__card-wrap');
 var cardStatus = paymentCard.querySelector('.payment__card-status');
 var cardNumber = paymentCard.querySelector('#payment__card-number');
@@ -8,6 +8,7 @@ var cardDate = paymentCard.querySelector('#payment__card-date');
 var cardCvc = paymentCard.querySelector('#payment__card-cvc');
 var cardHolder = paymentCard.querySelector('#payment__cardholder');
 
+// проверяем валидность введенного номера карты с помощью алгоритма луна
 var checkCardNumber = function (number) {
   var arr = number.split('');
   var sum = 0;
@@ -29,6 +30,7 @@ var checkCardNumber = function (number) {
   return sum % 10 === 0;
 };
 
+// меняем статус в зависимости от введенных данных
 var changeStatus = function () {
   var isNumberValid = checkCardNumber(cardNumber.value);
   var isCardValid = cardNumber.validity.valid && cardDate.validity.valid && cardCvc.validity.valid && cardHolder.validity.valid && isNumberValid;
@@ -82,10 +84,12 @@ cardHolder.addEventListener('invalid', function () {
   cardHolder.setCustomValidity(validityText);
 });
 
+// отдельно проверяем валидность карты с помощью алгоритма луна при change и выводим сообщение о его невалидности, если таковая имеется (при событии invalid такая проверка не срабатывает)
 cardNumber.addEventListener('change', function () {
   if (!checkCardNumber(cardNumber.value)) {
     cardNumber.setCustomValidity('Проверьте правильность указанного номера');
   }
 });
 
+// вешаем обработчик на весь блок и меняем статус при изменении
 paymentCard.addEventListener('change', changeStatus);

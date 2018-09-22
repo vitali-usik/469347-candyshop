@@ -115,18 +115,19 @@ var basket = {};
 var catalogCards = document.querySelector('.catalog__cards');
 var basketCards = document.querySelector('.goods__cards');
 
-var deliveryBlock = document.querySelector('.deliver__toggle');
-
+// нахождение случайного элемента массива
 var getRandomElement = function (arr) {
   var randomIndex = Math.floor(Math.random() * arr.length);
   return arr[randomIndex];
 };
 
+// генерация случайного числа между мин и макс значениями
 var getRandomValue = function (min, max) {
   var random = min + Math.random() * (max + 1 - min);
   return Math.floor(random);
 };
 
+// генерация случайного состава товара
 var getRandomContent = function (contents) {
   var content = getRandomElement(contents);
   for (var i = 0; i < GOODS_CONTENT; i++) {
@@ -135,22 +136,69 @@ var getRandomContent = function (contents) {
   return content;
 };
 
+// генерация случаного булевого значения
 var getRandomBoolean = function () {
   return getRandomValue(0, 1) === 1;
 };
 
+// создание массива товаров
 var createGoods = function (count) {
   var goods = [];
   for (var j = 0; j < count; j++) {
-    goods.push({'name': GOOD_NAMES[j], 'picture': PATH + getRandomElement(PICTURE_ROUTES), 'amount': getRandomValue(MIN_VALUE_AMOUNT, MAX_VALUE_AMOUNT), 'price': getRandomValue(MIN_VALUE_PRICE, MAX_VALUE_PRICE), 'weight': getRandomValue(MIN_VALUE_WEIGHT, MAX_VALUE_WEIGHT), 'rating': {'value': getRandomValue(MIN_RATING_VALUE, MAX_RATING_VALUE), 'number': getRandomValue(MIN_RATING_NUMBER, MAX_RATING_NUMBER)}, 'nutritionFacts': {'sugar': getRandomBoolean(), 'energy': getRandomValue(MIN_ENERGY_VALUE, MAX_ENERGY_VALUE), 'contents': getRandomContent(GOOD_INGRIDIENTS)}});
+    goods.push(
+        {
+          'id': j,
+          'name': GOOD_NAMES[j],
+          'picture': PATH + getRandomElement(PICTURE_ROUTES),
+          'amount': getRandomValue(MIN_VALUE_AMOUNT, MAX_VALUE_AMOUNT),
+          'price': getRandomValue(MIN_VALUE_PRICE, MAX_VALUE_PRICE),
+          'weight': getRandomValue(MIN_VALUE_WEIGHT, MAX_VALUE_WEIGHT),
+          'rating': {
+            'value': getRandomValue(MIN_RATING_VALUE, MAX_RATING_VALUE),
+            'number': getRandomValue(MIN_RATING_NUMBER, MAX_RATING_NUMBER)},
+          'nutritionFacts': {
+            'sugar': getRandomBoolean(),
+            'energy': getRandomValue(MIN_ENERGY_VALUE, MAX_ENERGY_VALUE),
+            'contents': getRandomContent(GOOD_INGRIDIENTS)
+          }});
   }
   return goods;
 };
 
+// добавление класса в зависимости от количества товара
+var checkAvailability = function (element, good) {
+  if (good.amount < 6) {
+    element.classList.remove('card--in-stock');
+  }
+  if (good.amount > 0) {
+    element.classList.add('card--little');
+  } else {
+    element.classList.add('card--soon');
+  }
+};
+
+// добавление класса в зависимости от рейтинга
+var checkRating = function (element, good) {
+  if (good.rating.value !== 5) {
+    var rating = element.querySelector('.stars__rating');
+    rating.classList.remove('stars__rating--five');
+    rating.classList.add('stars__rating--' + NUMBERS[good.rating.value]);
+  }
+};
+
+// добавление значения в зависимости от состава товара
+var setNutrition = function (element, good) {
+  var nutrition = element.querySelector('.card__characteristic');
+  nutrition.textContent = good.nutritionFacts.sugar ? 'Содержит сахар' : 'Без сахара';
+};
+
+// создание карточки
 var createCard = function (item) {
   var cardTemplate = document.querySelector('#card').content.querySelector('.catalog__card');
   var cardElement = cardTemplate.cloneNode(true);
+
   checkAvailability(cardElement, item);
+
   var picture = cardElement.querySelector('.card__img');
   picture.src = item.picture;
   picture.alt = item.name;
@@ -214,30 +262,6 @@ var cardClickHandler = function (evt, element) {
   }
 };
 
-var checkAvailability = function (element, good) {
-  if (good.amount < 6) {
-    element.classList.remove('card--in-stock');
-  }
-  if (good.amount > 0) {
-    element.classList.add('card--little');
-  } else {
-    element.classList.add('card--soon');
-  }
-};
-
-var checkRating = function (element, good) {
-  if (good.rating.value !== 5) {
-    var rating = element.querySelector('.stars__rating');
-    rating.classList.remove('stars__rating--five');
-    rating.classList.add('stars__rating--' + NUMBERS[good.rating.value]);
-  }
-};
-
-var setNutrition = function (element, good) {
-  var nutrition = element.querySelector('.card__characteristic');
-  nutrition.textContent = good.nutritionFacts.sugar ? 'Содержит сахар' : 'Без сахара';
-};
-
 var getBasketGood = function (item) {
   var basketGood = document.querySelector('#card-order').content.querySelector('.goods_card');
   var content = basketGood.cloneNode(true);
@@ -289,23 +313,6 @@ var renderCards = function (count, block) {
 
 };
 
-var deliveryClickHandler = function (evt) {
-  var tab = evt.target.id;
-  if (tab === '') {
-    return;
-  }
-  if (evt.target.id === 'deliver__courier') {
-    document.querySelector('.deliver__store').classList.add('visually-hidden');
-  } else {
-    document.querySelector('.deliver__courier').classList.add('visually-hidden');
-  }
-  document.querySelector('.' + tab).classList.remove('visually-hidden');
-};
-
-deliveryBlock.addEventListener('click', function (evt) {
-  deliveryClickHandler(evt);
-});
-
 catalogCards.classList.remove('catalog__cards--load');
 catalogCards.querySelector('.catalog__load').classList.add('visually-hidden');
 catalogCards.appendChild(renderCards(GOODS_AMOUNT, 'catalog'));
@@ -313,16 +320,3 @@ catalogCards.appendChild(renderCards(GOODS_AMOUNT, 'catalog'));
 /* basketCards.classList.remove('goods__cards--empty');
 basketCards.querySelector('.goods__card-empty').style.display = 'none';
 basketCards.appendChild(renderCards(GOODS_AMOUNT_BASKET, 'goods')); */
-
-var range = document.querySelector('.range');
-
-range.addEventListener('mouseup', function () {
-  var rangeLine = document.querySelector('.range__filter');
-  var rangeRight = range.querySelector('.range__btn--right');
-  var rangeLeft = range.querySelector('.range__btn--left');
-  var rangeMax = range.querySelector('.range__price--max');
-  var rangeMin = range.querySelector('.range__price--min');
-
-  rangeMax.textContent = Math.ceil(100 * (rangeRight.offsetLeft + rangeRight.offsetWidth) / rangeLine.offsetWidth);
-  rangeMin.textContent = Math.floor(100 * (rangeLeft.offsetLeft) / rangeLine.offsetWidth);
-});
