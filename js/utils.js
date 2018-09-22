@@ -1,6 +1,9 @@
 'use strict';
 
 (function () {
+  var ESC_KEYCODE = 27;
+  var ENTER_KEYCODE = 13;
+
   var GOODS_CONTENT = 4;
   // нахождение случайного элемента массива
   var getRandomElement = function (arr) {
@@ -32,6 +35,16 @@
     getRandomElement: getRandomElement,
     getRandomValue: getRandomValue,
     getRandomContent: getRandomContent,
-    getRandomBoolean: getRandomBoolean
+    getRandomBoolean: getRandomBoolean,
+    isEscEvent: function (evt, action) {
+      if (evt.keyCode === ESC_KEYCODE) {
+        action();
+      }
+    },
+    isEnterEvent: function (evt, action) {
+      if (evt.keyCode === ENTER_KEYCODE) {
+        action();
+      }
+    }
   };
 })();

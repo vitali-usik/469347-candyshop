@@ -1,7 +1,10 @@
 'use strict';
 
 // находим блок с оплатой и все соответствующие ему инпуты
-var paymentCard = document.querySelector('.payment__card-wrap');
+var payment = document.querySelector('.payment');
+var paymentBtn = payment.querySelector('.payment__method');
+var paymentCash = payment.querySelector('.payment__cash-wrap');
+var paymentCard = payment.querySelector('.payment__card-wrap');
 var cardStatus = paymentCard.querySelector('.payment__card-status');
 var cardNumber = paymentCard.querySelector('#payment__card-number');
 var cardDate = paymentCard.querySelector('#payment__card-date');
@@ -29,8 +32,11 @@ var checkCardNumber = function (number) {
 var changeStatus = function () {
   var isNumberValid = checkCardNumber(cardNumber.value);
   var isCardValid = cardNumber.validity.valid && cardDate.validity.valid && cardCvc.validity.valid && cardHolder.validity.valid && isNumberValid;
+  console.log(isCardValid);
+  console.log(cardNumber.validity.valid, cardDate.validity.valid, cardCvc.validity.valid, cardHolder.validity.valid, isNumberValid);
   var statusText = isCardValid === true ? 'Одобрен' : 'Не определен';
   cardStatus.textContent = statusText;
+  console.log(statusText);
 };
 
 cardNumber.addEventListener('invalid', function () {
@@ -82,5 +88,28 @@ cardNumber.addEventListener('change', function () {
   }
 });
 
+
+// добавляем тоггл на переключение вкладок
+var paymentBtnHandler = function (evt) {
+  // evt.preventDefault();
+  var tab = evt.target.id;
+  if (tab === 'payment__cash') {
+    paymentCash.classList.remove('visually-hidden');
+    paymentCard.classList.add('visually-hidden');
+  } else {
+    paymentCash.classList.add('visually-hidden');
+    paymentCard.classList.remove('visually-hidden');
+    /* paymentCard.addEventListener('keydown', function () {
+      window.utils.isEnterEvent(evtEnter, function () {
+        evtEnter.preventDefault();
+        return false;
+      });
+    }); */
+  }
+};
+
 // вешаем обработчик на весь блок и меняем статус при изменении
 paymentCard.addEventListener('change', changeStatus);
+
+// вешаем обработичк на кнопки и переключаем вкладки при клике
+paymentBtn.addEventListener('click', paymentBtnHandler);
