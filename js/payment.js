@@ -15,12 +15,7 @@ var checkCardNumber = function (number) {
   for (var i = 0; i < arr.length; i++) {
     if (i % 2 === 0) {
       var even = parseInt(number[i], 10) * 2;
-
-      if (even > 9) {
-        arr[i] = even - 9;
-      } else {
-        arr[i] = even;
-      }
+      arr[i] = even > 9 ? even - 9 : even;
     } else {
       arr[i] = parseInt(arr[i], 10);
     }
@@ -34,11 +29,7 @@ var checkCardNumber = function (number) {
 var changeStatus = function () {
   var isNumberValid = checkCardNumber(cardNumber.value);
   var isCardValid = cardNumber.validity.valid && cardDate.validity.valid && cardCvc.validity.valid && cardHolder.validity.valid && isNumberValid;
-  var statusText = 'Не определен';
-  if (isCardValid) {
-    statusText = 'Одобрен';
-  }
-
+  var statusText = isCardValid === true ? 'Одобрен' : 'Не определен';
   cardStatus.textContent = statusText;
 };
 

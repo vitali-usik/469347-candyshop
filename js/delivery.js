@@ -2,21 +2,21 @@
 
 (function () {
   var deliveryBlock = document.querySelector('.deliver__toggle');
+  var tabCourier = document.querySelector('.deliver__courier');
+  var tabStore = document.querySelector('.deliver__store');
 
   var deliveryClickHandler = function (evt) {
     var tab = evt.target.id;
     if (tab === '') {
       return;
     }
-    if (evt.target.id === 'deliver__courier') {
-      document.querySelector('.deliver__store').classList.add('visually-hidden');
+    if (tab === 'deliver__courier') {
+      tabStore.classList.add('visually-hidden');
     } else {
-      document.querySelector('.deliver__courier').classList.add('visually-hidden');
+      tabCourier.classList.add('visually-hidden');
     }
     document.querySelector('.' + tab).classList.remove('visually-hidden');
   };
 
-  deliveryBlock.addEventListener('click', function (evt) {
-    deliveryClickHandler(evt);
-  });
+  deliveryBlock.addEventListener('click', deliveryClickHandler);
 })();
