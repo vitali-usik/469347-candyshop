@@ -32,11 +32,8 @@ var checkCardNumber = function (number) {
 var changeStatus = function () {
   var isNumberValid = checkCardNumber(cardNumber.value);
   var isCardValid = cardNumber.validity.valid && cardDate.validity.valid && cardCvc.validity.valid && cardHolder.validity.valid && isNumberValid;
-  console.log(isCardValid);
-  console.log(cardNumber.validity.valid, cardDate.validity.valid, cardCvc.validity.valid, cardHolder.validity.valid, isNumberValid);
   var statusText = isCardValid === true ? 'Одобрен' : 'Не определен';
   cardStatus.textContent = statusText;
-  console.log(statusText);
 };
 
 cardNumber.addEventListener('invalid', function () {
