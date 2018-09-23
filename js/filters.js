@@ -27,7 +27,6 @@
       // запоминаем начальные координаты передвигаемого пина
       var startCoords = {
         x: evt.clientX,
-        y: evt.clientY
       };
       // создаем функцию отслеживания передвижения мышки
       var onMouseMove = function (moveEvt) {
@@ -36,40 +35,37 @@
         // координаты передвижения мышки
         var shift = {
           x: startCoords.x - moveEvt.clientX,
-          y: startCoords.y - moveEvt.clientY
         };
 
         startCoords = {
           x: moveEvt.clientX,
-          y: moveEvt.clientY
         };
-        // если курсор вышел за левую границу слайдера
-        if ((elem.offsetLeft - shift.x) < 1) {
-          elem.style.left = 0 + 'px';
-        }
+        // находим динамическое положение пина
+        var newLeft = elem.offsetLeft - shift.x;
         // находим правую границу слайдера
         var rightEdge = rangeLine.offsetWidth - elem.offsetWidth;
-        // если курсор вышел за правую границу слайдера
-        if ((elem.offsetLeft - shift.x) > rightEdge) {
+        // если курсор вышел за левую границу слайдера
+        if (newLeft < 1) {
+          elem.style.left = 1 + 'px';
+        } else if (newLeft >= rightEdge) {
+          // если курсор вышел за правую границу слайдера
           elem.style.left = rightEdge + 'px';
         }
         // отрисовываем передвижение
-        elem.style.left = (elem.offsetLeft - shift.x) + 'px';
+        elem.style.left = (elem.offsetLeft - shift.x) + 'px'; // ЕСЛИ ВМЕСТО elem.offsetLeft - shift.x СТАВЛЮ ПЕРЕМЕННУЮ newLeft ТО ВСЕ КРАШИТСЯ(!!!)
 
         // отрисовка линии отдельно для левого пина и отдельно для правого
         if (elem.classList.contains('range__btn--left')) {
-          rangeFill.style.left = Math.ceil(100 * (elem.offsetLeft - shift.x + elem.offsetWidth / 2) / rangeLine.offsetWidth) + '%';
+          rangeFill.style.left = elem.offsetLeft + 'px';
 
           // динамическое изменение цены
-          rangeMin.textContent = Math.floor(100 * (elem.offsetLeft + (elem.offsetWidth / 2) - shift.x) / rangeLine.offsetWidth);
+          rangeMin.textContent = elem.offsetLeft;
         } else if (elem.classList.contains('range__btn--right')) {
-          rangeFill.style.right = 100 - Math.floor(100 * (elem.offsetLeft - shift.x + elem.offsetWidth / 2) / rangeLine.offsetWidth) + '%';
+          rangeFill.style.right = (rangeLine.offsetWidth - elem.offsetLeft) + 'px';
 
           // динамическое изменение цены
-          rangeMax.textContent = Math.ceil(100 * (elem.offsetLeft + (elem.offsetWidth / 2) - shift.x) / rangeLine.offsetWidth);
+          rangeMax.textContent = elem.offsetLeft;
         }
-        /* console.log((elem.offsetLeft - shift.x) + 'px');
-        console.log('percentage' + Math.ceil(100 * (elem.offsetLeft - shift.x) / rangeLine.offsetWidth) + '%'); */
       };
       // снимаем обработчики при отпускании кнопки мыши
       var onMouseUp = function (upEvt) {
