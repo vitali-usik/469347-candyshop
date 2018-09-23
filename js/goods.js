@@ -187,9 +187,6 @@
     setNutrition(cardElement, item);
     cardElement.querySelector('.card__composition-list').textContent = item.nutritionFacts.contents;
 
-    /* cardElement.addEventListener('click', function (evt) {
-      cardClickHandler(evt, cardElement);
-    }); */
     cardElement.addEventListener('click', cardClickHandler);
 
     return cardElement;
@@ -274,9 +271,9 @@
 
     content.querySelector('.card-order__count').value = item.amount;
 
-    /* content.addEventListener('click', function (evt) {
+    content.addEventListener('click', function (evt) {
       btnBasketHandler(evt, content);
-    }); */
+    });
     return content;
   };
 
@@ -290,24 +287,28 @@
     basket[good.name.toUpperCase()] = {'good': good, 'card': card};
   };
 
+  var btnBasketHandler = function (evt, element) {
+    evt.preventDefault();
+    var target = evt.target;
+    if (target.classList.contains('card-order__close')) {
+      basketCards.removeChild(element);
+      basketCards.classList.add('goods__cards--empty');
+      basketCards.querySelector('.goods__card-empty').style.display = 'block';
+    } else if (target.classList.contains('card-order__btn--increase')) {
+      element.querySelector('.card-order__count').value++;
+    } else if (target.classList.contains('card-order__btn--decrease')) {
+      element.querySelector('.card-order__count').value--;
+      if (element.querySelector('.card-order__count').value === '0') {
+        basketCards.removeChild(element);
+        basketCards.classList.add('goods__cards--empty');
+        basketCards.querySelector('.goods__card-empty').style.display = 'block';
+      }
+    }
+  };
+
   catalogCards.classList.remove('catalog__cards--load');
   catalogCards.querySelector('.catalog__load').classList.add('visually-hidden');
   catalogCards.appendChild(renderCards(GOODS_AMOUNT, 'catalog'));
 }
 )();
 
-
-/*  var btnBasketHandler = function (evt, element) {
-    evt.preventDefault();
-    var target = evt.target;
-    if (target.classList.contains('card-order__close')) {
-      element.remove();
-    } else if (target.classList.contains('card-order__btn--increase')) {
-      element.querySelector('.card-order__count').value++;
-    } else if (target.classList.contains('card-order__btn--decrease')) {
-      element.querySelector('.card-order__count').value--;
-      if (element.querySelector('.card-order__count').value === 0) {
-        element.remove();
-      }
-    }
-  }; */

@@ -97,12 +97,6 @@
     } else {
       paymentCash.classList.add('visually-hidden');
       paymentCard.classList.remove('visually-hidden');
-    /* paymentCard.addEventListener('keydown', function () {
-      window.utils.isEnterEvent(evtEnter, function () {
-        evtEnter.preventDefault();
-        return false;
-      });
-    }); */
     }
   };
 
