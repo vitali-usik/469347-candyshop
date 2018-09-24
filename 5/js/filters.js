@@ -45,26 +45,38 @@
         // находим правую границу слайдера
         var rightEdge = rangeLine.offsetWidth - elem.offsetWidth;
         // если курсор вышел за левую границу слайдера
-        if (newLeft < 1) {
-          elem.style.left = 1 + 'px';
-        } else if (newLeft >= rightEdge) {
+        if (newLeft < 0) {
+          newLeft = 0;
+        } else if (newLeft > rightEdge) {
           // если курсор вышел за правую границу слайдера
-          elem.style.left = rightEdge + 'px';
+          newLeft = rightEdge;
         }
         // отрисовываем передвижение
-        elem.style.left = (elem.offsetLeft - shift.x) + 'px'; // ЕСЛИ ВМЕСТО elem.offsetLeft - shift.x СТАВЛЮ ПЕРЕМЕННУЮ newLeft ТО ВСЕ КРАШИТСЯ(!!!)
+        elem.style.left = newLeft + 'px';
 
         // отрисовка линии отдельно для левого пина и отдельно для правого
         if (elem.classList.contains('range__btn--left')) {
-          rangeFill.style.left = elem.offsetLeft + 'px';
-
+          rangeFill.style.left = newLeft + 'px';
+          // если левый пин заходит за правый
+          if (rangeRight.offsetLeft < newLeft) {
+            newLeft = rangeRight.offsetLeft;
+            elem.style.left = newLeft + 'px';
+            rangeMin.textContent = newLeft;
+            return;
+          }
           // динамическое изменение цены
-          rangeMin.textContent = elem.offsetLeft;
+          rangeMin.textContent = newLeft;
         } else if (elem.classList.contains('range__btn--right')) {
-          rangeFill.style.right = (rangeLine.offsetWidth - elem.offsetLeft) + 'px';
-
+          rangeFill.style.right = (rangeLine.offsetWidth - newLeft) + 'px';
+          // если правый пин заходит за левый
+          if (rangeLeft.offsetLeft > newLeft) {
+            newLeft = rangeLeft.offsetLeft;
+            elem.style.left = newLeft + 'px';
+            rangeMax.textContent = newLeft;
+            return;
+          }
           // динамическое изменение цены
-          rangeMax.textContent = elem.offsetLeft;
+          rangeMax.textContent = newLeft;
         }
       };
       // снимаем обработчики при отпускании кнопки мыши
