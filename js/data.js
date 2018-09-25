@@ -112,6 +112,9 @@
   var catalogCards = document.querySelector('.catalog__cards');
   var basketCards = document.querySelector('.goods__cards');
 
+  var catalog = {};
+  var basket = {};
+
   // создание массива товаров
   var createArrayOfGoods = function (count) {
     var generateGoods = [];
@@ -185,6 +188,10 @@
     setNutrition(cardElement, item);
     cardElement.querySelector('.card__composition-list').textContent = item.nutritionFacts.contents;
 
+    cardElement.addEventListener('click', function (evtClick) {
+      window.catalog.cardClickHandler(evtClick);
+    });
+
     return cardElement;
   };
 
@@ -215,12 +222,14 @@
         renderGoods.forEach(function (good) {
           var renderCard = createDomCard(good);
           fragment.appendChild(renderCard);
+          catalog[good.name.toUpperCase()] = {'good': good, 'card': renderCard};
         });
         break;
       case 'goods':
         renderGoods.forEach(function (good) {
-          var card = createBasketCard(good);
-          fragment.appendChild(card);
+          var renderCard = createBasketCard(good);
+          fragment.appendChild(renderCard);
+          basket[good.name.toUpperCase()] = {'good': good, 'card': renderCard};
         });
         break;
     }
@@ -233,8 +242,11 @@
 
   window.data = {
     createArrayOfGoods: createArrayOfGoods,
+    checkAvailability: checkAvailability,
     createDomCard: createDomCard,
     createBasketCard: createBasketCard,
-    renderCards: renderCards
+    renderCards: renderCards,
+    catalog: catalog,
+    basket: basket
   };
 })();
