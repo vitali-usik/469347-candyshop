@@ -11,7 +11,6 @@
   var cardDate = paymentCard.querySelector('#payment__card-date');
   var cardCvc = paymentCard.querySelector('#payment__card-cvc');
   var cardHolder = paymentCard.querySelector('#payment__cardholder');
-  var input = paymentCard.querySelectorAll('input');
 
   // проверяем валидность введенного номера карты с помощью алгоритма луна
   var checkCardNumber = function (number) {
@@ -95,15 +94,9 @@
     if (tab === 'payment__cash') {
       paymentCash.classList.remove('visually-hidden');
       paymentCard.classList.add('visually-hidden');
-      /* input.forEach(function () {
-        input.disabled = true;
-      })
-      console.log(input); */
     } else {
       paymentCash.classList.add('visually-hidden');
       paymentCard.classList.remove('visually-hidden');
-      /* input.disabled = false;
-      input.required = false; */
     }
   };
 
