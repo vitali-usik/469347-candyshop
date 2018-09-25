@@ -9,18 +9,6 @@
   var rangeMax = range.querySelector('.range__price--max');
   var rangeMin = range.querySelector('.range__price--min');
 
-  /* range.addEventListener('mouseup', function () {
-    rangeMax.textContent = Math.ceil(100 * (rangeRight.offsetLeft + rangeRight.offsetWidth) / rangeLine.offsetWidth);
-    rangeMin.textContent = Math.floor(100 * (rangeLeft.offsetLeft) / rangeLine.offsetWidth);
-  }); */
-
-  /* console.log(Math.ceil(100 * (rangeRight.offsetLeft + rangeRight.offsetWidth) / rangeLine.offsetWidth));
-  console.log(Math.floor(100 * (rangeLeft.offsetLeft) / rangeLine.offsetWidth));
-
-  console.log(rangeLeft.offsetLeft);
-  console.log(rangeRight.offsetLeft);
-  console.log(rangeLine.offsetWidth);
- */
   var pinMove = function (elem) {
     elem.addEventListener('mousedown', function (evt) {
       evt.preventDefault();
