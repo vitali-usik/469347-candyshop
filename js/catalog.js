@@ -39,7 +39,7 @@
       } else {
         headerBasket.textContent++;
       }
-      window.data.checkAvailability(catalogItem['card'], catalogItem['good']);
+      window.data.addClassNameByGoodAvailability(catalogItem['card'], catalogItem['good']);
     }
   };
 
@@ -94,10 +94,6 @@
   };
 
   window.catalog = {
-    cardClickHandler: cardClickHandler,
-    updateAmount: updateAmount,
-    getBasketGood: getBasketGood,
-    addToBasket: addToBasket,
-    btnBasketHandler: btnBasketHandler
+    cardClickHandler: cardClickHandler
   };
 })();

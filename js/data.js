@@ -110,7 +110,6 @@
   var PRICE_WEIGHT_NODE_INDEX = 2;
 
   var catalogCards = document.querySelector('.catalog__cards');
-  var basketCards = document.querySelector('.goods__cards');
 
   var catalog = {};
   var basket = {};
@@ -140,7 +139,7 @@
   };
 
   // добавление класса в зависимости от количества товара
-  var checkAvailability = function (element, good) {
+  var addClassNameByGoodAvailability = function (element, good) {
     if (good.amount < 6) {
       element.classList.remove('card--in-stock');
     }
@@ -152,7 +151,7 @@
   };
 
   // добавление класса в зависимости от рейтинга
-  var checkRating = function (element, good) {
+  var addGoodsRate = function (element, good) {
     if (good.rating.value !== 5) {
       var rating = element.querySelector('.stars__rating');
       rating.classList.remove('stars__rating--five');
@@ -171,7 +170,7 @@
     var cardTemplate = document.querySelector('#card').content.querySelector('.catalog__card');
     var cardElement = cardTemplate.cloneNode(true);
 
-    checkAvailability(cardElement, item);
+    addClassNameByGoodAvailability(cardElement, item);
 
     var picture = cardElement.querySelector('.card__img');
     picture.src = item.picture;
@@ -183,7 +182,7 @@
     price.childNodes[PRICE_AMOUNT_NODE_INDEX].textContent = item.price + ' ';
     price.childNodes[PRICE_WEIGHT_NODE_INDEX].textContent = '/ ' + item.weight + ' Г';
 
-    checkRating(cardElement, item);
+    addGoodsRate(cardElement, item);
     cardElement.querySelector('.star__count').textContent = item.rating.number;
     setNutrition(cardElement, item);
     cardElement.querySelector('.card__composition-list').textContent = item.nutritionFacts.contents;
@@ -195,57 +194,30 @@
     return cardElement;
   };
 
-  // создание карточки товара (корзина) в DOM
-  var createBasketCard = function (item) {
-    var content = basketCards.cloneNode(true);
-
-    var picture = content.querySelector('.card-order__img');
-    picture.src = item.picture;
-    picture.alt = item.name;
-
-    content.querySelector('.card-order__title').textContent = item.name;
-
-    var price = content.querySelector('.card-order__price');
-    price.textContent = item.price + ' ₽';
-
-    content.querySelector('.card-order__count').value = item.amount;
-
-    return content;
-  };
-
   // отрисовка карточек
-  var renderCards = function (count, block) {
-    var renderGoods = createArrayOfGoods(count);
+  var renderCards = function (count) {
+    var cardsArray = createArrayOfGoods(count);
     var fragment = document.createDocumentFragment();
-    switch (block) {
-      case 'catalog':
-        renderGoods.forEach(function (good) {
-          var renderCard = createDomCard(good);
-          fragment.appendChild(renderCard);
-          catalog[good.name.toUpperCase()] = {'good': good, 'card': renderCard};
-        });
-        break;
-      case 'goods':
-        renderGoods.forEach(function (good) {
-          var renderCard = createBasketCard(good);
-          fragment.appendChild(renderCard);
-          basket[good.name.toUpperCase()] = {'good': good, 'card': renderCard};
-        });
-        break;
-    }
+    cardsArray.forEach(function (good) {
+      var renderCard = createDomCard(good);
+      fragment.appendChild(renderCard);
+      catalog[good.name.toUpperCase()] = {'good': good, 'card': renderCard};
+    });
     return fragment;
 
   };
-  catalogCards.classList.remove('catalog__cards--load');
-  catalogCards.querySelector('.catalog__load').classList.add('visually-hidden');
-  catalogCards.appendChild(renderCards(GOODS_AMOUNT, 'catalog'));
+
+  var init = function () {
+    catalogCards.classList.remove('catalog__cards--load');
+    catalogCards.querySelector('.catalog__load').classList.add('visually-hidden');
+    catalogCards.appendChild(renderCards(GOODS_AMOUNT));
+  };
+
+  init();
 
   window.data = {
-    createArrayOfGoods: createArrayOfGoods,
-    checkAvailability: checkAvailability,
+    addClassNameByGoodAvailability: addClassNameByGoodAvailability,
     createDomCard: createDomCard,
-    createBasketCard: createBasketCard,
-    renderCards: renderCards,
     catalog: catalog,
     basket: basket
   };
