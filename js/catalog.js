@@ -75,9 +75,7 @@
       // удаляем элемент из корзины
       basketCards.removeChild(window.data.basket[goodId]['card']);
       delete window.data.basket[goodId];
-      console.log(window.data.basket);
-
-      if (!window.data.basket['card']) {
+      if (Object.keys(window.data.basket).length === 0) {
         basketCards.classList.add('goods__cards--empty');
         basketCards.querySelector('.goods__card-empty').style.display = 'block';
       }
