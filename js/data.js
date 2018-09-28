@@ -42,7 +42,7 @@
     nutrition.textContent = good.nutritionFacts.sugar ? 'Содержит сахар' : 'Без сахара';
   };
 
-  // создание карточки в DOM
+  // создание карточки каталога в DOM
   var createDomCard = function (item) {
     var cardTemplate = document.querySelector('#card').content.querySelector('.catalog__card');
     var cardElement = cardTemplate.cloneNode(true);
@@ -52,6 +52,8 @@
     var picture = cardElement.querySelector('.card__img');
     picture.src = PATH + item.picture;
     picture.alt = item.name;
+
+    cardElement.setAttribute('data-id', item.id);
 
     cardElement.querySelector('.card__title').textContent = item.name;
 
@@ -71,18 +73,58 @@
     return cardElement;
   };
 
+  // создание карточки корзины в DOM
+  var createBasketDomCard = function (item) {
+    var basketGood = document.querySelector('#card-order').content.querySelector('.goods__card');
+    var content = basketGood.cloneNode(true);
+
+    var picture = content.querySelector('.card-order__img');
+    picture.src = PATH + item.picture;
+    picture.alt = item.name;
+
+    content.querySelector('.card-order__title').textContent = item.name;
+
+    var price = content.querySelector('.card-order__price');
+    price.textContent = item.price + ' ₽';
+
+    content.querySelector('.card-order__count').value = item.amount;
+
+    return content;
+  };
+
+  // отрисовка карточек
+  var renderCards = function (items, block) {
+    var fragment = document.createDocumentFragment();
+    switch (block) {
+      case 'catalog':
+        items.forEach(function (item) {
+          var card = createDomCard(item);
+          fragment.appendChild(card);
+          catalog[item.id] = {'good': item, 'card': card};
+        });
+        break;
+      case 'basket':
+        items.forEach(function (item) {
+          var card = createBasketDomCard(item);
+          fragment.appendChild(card);
+          basket[item.id] = {'good': item, 'card': card};
+        });
+        break;
+    }
+    return fragment;
+
+  };
+
   var init = function () {
     catalogCards.classList.remove('catalog__cards--load');
     catalogCards.querySelector('.catalog__load').classList.add('visually-hidden');
   };
 
-  // обработка успешного запроса
+  // обработка успешного запроса и добавление айдишника
   var successHandler = function (cards) {
-    var fragment = document.createDocumentFragment();
-    for (var i = 0; i < cards.length; i++) {
-      fragment.appendChild(createDomCard(cards[i]));
-    }
-    catalogCards.appendChild(fragment);
+    catalogCards.appendChild(renderCards(cards.map(function (card, i) {
+      return Object.assign({id: 'good-' + i}, card);
+    }), 'catalog'));
   };
 
   // обработка ошибок при запросе
@@ -96,6 +138,7 @@
   window.data = {
     addClassNameByGoodAvailability: addClassNameByGoodAvailability,
     createDomCard: createDomCard,
+    createBasketDomCard: createBasketDomCard,
     catalog: catalog,
     basket: basket
   };
