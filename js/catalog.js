@@ -50,19 +50,18 @@
       }
       window.data.addClassNameByGoodAvailability(catalogItem['card'], catalogItem['good']);
     }
-
-    console.log(window.data.basket[goodId]);
-    console.log(window.data.catalog[goodId]);
   };
 
   var addToBasket = function (id) {
     var good = Object.assign({}, window.data.catalog[id]['good']);
     good.amount = 1;
     var card = window.data.createBasketDomCard(good);
+    card.setAttribute('data-id', id);
     basketCards.classList.remove('goods__cards--empty');
     basketCards.querySelector('.goods__card-empty').style.display = 'none';
     basketCards.appendChild(card);
     window.data.basket[id] = {'good': good, 'card': card};
+    console.log(window.data.basket);
   };
 
   var btnBasketHandler = function (evt) {
@@ -72,13 +71,15 @@
     var good = target.closest('.card-order');
     // достаем айдишник товара
     var goodId = good.getAttribute('data-id');
-    console.log(good);
     if (target.classList.contains('card-order__close')) {
-      (window.data.basket[goodId]).remove();
-      if (!window.data.basket) {
+      // удаляем элемент из корзины
+      basketCards.removeChild(window.data.basket[goodId]['card']);
+      delete window.data.basket[goodId];
+      console.log(window.data.basket);
+
+      if (!window.data.basket['card']) {
         basketCards.classList.add('goods__cards--empty');
         basketCards.querySelector('.goods__card-empty').style.display = 'block';
-        basket.removeEventListener('click', btnBasketHandler);
       }
     } else if (target.classList.contains('card-order__btn--increase')) {
       window.data.basket[goodId]['card'].querySelector('.card-order__count').value++;
@@ -88,9 +89,7 @@
       updateAmount(goodId, -1);
       if (window.data.basket[goodId]['card'].querySelector('.card-order__count').value === '0') {
         basketCards.removeChild(window.data.basket[goodId]['card']);
-        basketCards.classList.add('goods__cards--empty');
-        basketCards.querySelector('.goods__card-empty').style.display = 'block';
-        basket.removeEventListener('click', btnBasketHandler);
+        delete window.data.basket[goodId];
       }
     }
   };

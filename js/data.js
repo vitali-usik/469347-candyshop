@@ -79,6 +79,8 @@
     picture.src = PATH + item.picture;
     picture.alt = item.name;
 
+    content.setAttribute('data-id', item.id);
+
     content.querySelector('.card-order__title').textContent = item.name;
 
     var price = content.querySelector('.card-order__price');
@@ -136,6 +138,7 @@
     addClassNameByGoodAvailability: addClassNameByGoodAvailability,
     createDomCard: createDomCard,
     createBasketDomCard: createBasketDomCard,
+    renderCards: renderCards,
     catalog: catalog,
     basket: basket
   };
