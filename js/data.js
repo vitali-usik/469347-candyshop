@@ -66,9 +66,6 @@
     setNutrition(cardElement, item);
     cardElement.querySelector('.card__composition-list').textContent = item.nutritionFacts.contents;
 
-    cardElement.addEventListener('click', function (evtClick) {
-      window.catalog.cardClickHandler(evtClick);
-    });
 
     return cardElement;
   };
