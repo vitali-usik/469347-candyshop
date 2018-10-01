@@ -61,7 +61,6 @@
     basketCards.querySelector('.goods__card-empty').style.display = 'none';
     basketCards.appendChild(card);
     window.data.basket[id] = {'good': good, 'card': card};
-    console.log(window.data.basket);
   };
 
   var btnBasketHandler = function (evt) {
@@ -71,22 +70,23 @@
     var good = target.closest('.card-order');
     // достаем айдишник товара
     var goodId = good.getAttribute('data-id');
+    var currentGood = window.data.basket[goodId];
     if (target.classList.contains('card-order__close')) {
       // удаляем элемент из корзины
-      basketCards.removeChild(window.data.basket[goodId]['card']);
+      basketCards.removeChild(currentGood['card']);
       delete window.data.basket[goodId];
       if (Object.keys(window.data.basket).length === 0) {
         basketCards.classList.add('goods__cards--empty');
         basketCards.querySelector('.goods__card-empty').style.display = 'block';
       }
     } else if (target.classList.contains('card-order__btn--increase')) {
-      window.data.basket[goodId]['card'].querySelector('.card-order__count').value++;
+      currentGood['card'].querySelector('.card-order__count').value++;
       updateAmount(goodId, 1);
     } else if (target.classList.contains('card-order__btn--decrease')) {
-      window.data.basket[goodId]['card'].querySelector('.card-order__count').value--;
+      currentGood['card'].querySelector('.card-order__count').value--;
       updateAmount(goodId, -1);
-      if (window.data.basket[goodId]['card'].querySelector('.card-order__count').value === '0') {
-        basketCards.removeChild(window.data.basket[goodId]['card']);
+      if (currentGood['card'].querySelector('.card-order__count').value === '0') {
+        basketCards.removeChild(currentGood['card']);
         delete window.data.basket[goodId];
       }
     }
