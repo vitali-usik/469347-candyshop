@@ -96,10 +96,12 @@
     var fragment = document.createDocumentFragment();
     switch (block) {
       case 'catalog':
-        items.forEach(function (item) {
+        items.forEach(function (item, i) {
+          item.id = 'good-' + i;
           var card = createDomCard(item);
           fragment.appendChild(card);
           catalog[item.id] = {'good': item, 'card': card};
+          // catalog['good-' + i]['good'].id = 'good-' + i;
         });
         break;
       case 'basket':
@@ -121,9 +123,7 @@
 
   // обработка успешного запроса и добавление айдишника
   var successHandler = function (cards) {
-    catalogCards.appendChild(renderCards(cards.map(function (card, i) {
-      return Object.assign({id: 'good-' + i}, card);
-    }), 'catalog'));
+    catalogCards.appendChild(renderCards(cards, 'catalog'));
   };
 
   // обработка ошибок при запросе
