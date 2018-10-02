@@ -27,8 +27,15 @@
       // обращаемся к определенному товару и его объекту в DOM
       window.data.catalog[goodId]['card'].querySelector('.card__composition').classList.toggle('card__composition--hidden');
     } else if (target.classList.contains('card__btn-favorite')) {
-      target.classList.toggle('card__btn-favorite--selected');
-      target.blur();
+      if (target.classList.contains('card__btn-favorite--selected')) {
+        target.classList.remove('card__btn-favorite--selected');
+        window.data.catalog[goodId]['card'].setAttribute('data-selected', false);
+        target.blur();
+      } else {
+        target.classList.add('card__btn-favorite--selected');
+        window.data.catalog[goodId]['card'].setAttribute('data-selected', true);
+        target.blur();
+      }
     } else if (target.classList.contains('card__btn')) {
       var catalogItem = window.data.catalog[goodId];
       if (catalogItem['good'].amount === 0) {
