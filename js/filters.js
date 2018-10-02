@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-  var sidebar = document.querySelector('.catalog__sidebar');
   var range = document.querySelector('.range');
   var rangeLine = document.querySelector('.range__filter');
   var rangeFill = range.querySelector('.range__fill-line');
@@ -9,8 +8,6 @@
   var rangeLeft = range.querySelector('.range__btn--left');
   var rangeMax = range.querySelector('.range__price--max');
   var rangeMin = range.querySelector('.range__price--min');
-
-  var catalogCards = document.querySelector('.catalog__cards');
 
   // функция движения ползунка слейдера
   var pinMove = function (elem) {
@@ -84,29 +81,7 @@
     });
   };
 
-  var filterByKind = function (evt, items) {
-    evt.preventDefault();
-    var target = evt.target.innerText;
-    // var count = 0;
-    Object.keys(items)
-    .forEach(function (id) {
-      items[id].card.remove();
-      if (items[id].good.kind === target) {
-        // count++;
-        catalogCards.appendChild(items[id].card);
-      }
-    });
-  };
-
-  /* var filterByFacts = function (evt, items, fact) {
-    evt.preventDefault();
-  }; */
-
   pinMove(rangeRight);
   pinMove(rangeLeft);
-
-  sidebar.addEventListener('click', function (evt) {
-    filterByKind(evt, window.data.catalog);
-  });
 
 })();
