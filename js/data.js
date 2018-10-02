@@ -98,10 +98,10 @@
       case 'catalog':
         items.forEach(function (item, i) {
           item.id = 'good-' + i;
+          item.isFavorite = false;
           var card = createDomCard(item);
           fragment.appendChild(card);
           catalog[item.id] = {'good': item, 'card': card};
-          // catalog['good-' + i]['good'].id = 'good-' + i;
         });
         break;
       case 'basket':
@@ -113,7 +113,6 @@
         break;
     }
     return fragment;
-
   };
 
   var init = function () {
@@ -124,6 +123,7 @@
   // обработка успешного запроса и добавление айдишника
   var successHandler = function (cards) {
     catalogCards.appendChild(renderCards(cards, 'catalog'));
+    init();
   };
 
   // обработка ошибок при запросе
@@ -131,7 +131,6 @@
     error.classList.remove('modal--hidden');
   };
 
-  init();
   window.backend.loadData(successHandler, errorHandler);
 
   window.data = {
@@ -139,6 +138,7 @@
     createDomCard: createDomCard,
     createBasketDomCard: createBasketDomCard,
     renderCards: renderCards,
+    successHandler: successHandler,
     catalog: catalog,
     basket: basket
   };
