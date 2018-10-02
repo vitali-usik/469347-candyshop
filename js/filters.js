@@ -11,8 +11,8 @@
   var rangeMin = range.querySelector('.range__price--min');
 
   var catalogCards = document.querySelector('.catalog__cards');
-  var catalog = document.querySelector('.catalog__cards-wrap');
-  var notFound = document.querySelector('#empty-filters').content.querySelector('.catalog__empty-filter').cloneNode(true);
+  // var catalog = document.querySelector('.catalog__cards-wrap');
+  // var notFound = document.querySelector('#empty-filters').content.querySelector('.catalog__empty-filter').cloneNode(true);
 
   // функция движения ползунка слейдера
   var pinMove = function (elem) {
