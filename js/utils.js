@@ -26,7 +26,7 @@
     return content;
   };
 
-  // генерация случаного булевого значения
+  // генерация случайного булевого значения
   var getRandomBoolean = function () {
     return getRandomValue(0, 1) === 1;
   };

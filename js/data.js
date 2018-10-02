@@ -1,110 +1,9 @@
 'use strict';
 
 (function () {
-  // константы для генерации товаров
-  var GOODS_AMOUNT = 26;
-  var GOOD_NAMES = [
-    'Чесночные сливки',
-    'Огуречный педант',
-    'Молочная хрюша',
-    'Грибной шейк',
-    'Баклажановое безумие',
-    'Паприколу итальяно',
-    'Нинзя-удар васаби',
-    'Хитрый баклажан',
-    'Горчичный вызов',
-    'Кедровая липучка',
-    'Корманный портвейн',
-    'Чилийский задира',
-    'Беконовый взрыв',
-    'Арахис vs виноград',
-    'Сельдерейная душа',
-    'Початок в бутылке',
-    'Чернющий мистер чеснок',
-    'Раша федераша',
-    'Кислая мина',
-    'Кукурузное утро',
-    'Икорный фуршет',
-    'Новогоднее настроение',
-    'С пивком потянет',
-    'Мисс креветка',
-    'Бесконечный взрыв',
-    'Невинные винные',
-    'Бельгийское пенное',
-    'Острый язычок'];
-
-  var NUMBERS = ['one', 'two', 'three', 'four', 'five'];
-
-  var PICTURE_ROUTES = [
-    'gum-cedar.jpg',
-    'gum-chile.jpg',
-    'gum-eggplant.jpg',
-    'gum-mustard.jpg',
-    'gum-portwine.jpg',
-    'gum-wasabi.jpg',
-    'ice-cucumber.jpg',
-    'ice-eggplant.jpg',
-    'ice-garlic.jpg',
-    'ice-italian.jpg',
-    'ice-mushroom.jpg',
-    'ice-pig.jpg',
-    'marmalade-beer.jpg',
-    'marmalade-caviar.jpg',
-    'marmalade-corn.jpg',
-    'marmalade-new-year.jpg',
-    'marmalade-sour.jpg',
-    'marshmallow-bacon.jpg',
-    'marshmallow-beer.jpg',
-    'marshmallow-shrimp.jpg',
-    'marshmallow-spicy.jpg',
-    'marshmallow-wine.jpg',
-    'soda-bacon.jpg',
-    'soda-celery.jpg',
-    'soda-cob.jpg',
-    'soda-garlic.jpg',
-    'soda-peanut-grapes.jpg',
-    'soda-russian.jpg'
-  ];
   var PATH = 'img/cards/';
 
-  var GOOD_INGRIDIENTS = [
-    'молоко',
-    'сливки',
-    'вода',
-    'пищевой краситель',
-    'патока',
-    'ароматизатор бекона',
-    'ароматизатор свинца',
-    'ароматизатор дуба, идентичный натуральному',
-    'ароматизатор картофеля',
-    'лимонная кислота',
-    'загуститель',
-    'эмульгатор',
-    'консервант: сорбат калия',
-    'посолочная смесь: соль, нитрит натрия',
-    'ксилит',
-    'карбамид',
-    'вилларибо',
-    'виллабаджо'
-  ];
-
-  var MIN_VALUE_AMOUNT = 0;
-  var MAX_VALUE_AMOUNT = 20;
-
-  var MIN_VALUE_PRICE = 100;
-  var MAX_VALUE_PRICE = 1500;
-
-  var MIN_VALUE_WEIGHT = 30;
-  var MAX_VALUE_WEIGHT = 300;
-
-  var MIN_RATING_VALUE = 1;
-  var MAX_RATING_VALUE = 5;
-
-  var MIN_RATING_NUMBER = 10;
-  var MAX_RATING_NUMBER = 900;
-
-  var MIN_ENERGY_VALUE = 70;
-  var MAX_ENERGY_VALUE = 500;
+  var NUMBERS = ['one', 'two', 'three', 'four', 'five'];
 
   var PRICE_AMOUNT_NODE_INDEX = 0;
   var PRICE_WEIGHT_NODE_INDEX = 2;
@@ -114,29 +13,7 @@
   var catalog = {};
   var basket = {};
 
-  // создание массива товаров
-  var createArrayOfGoods = function (count) {
-    var generateGoods = [];
-    for (var j = 0; j < count; j++) {
-      generateGoods.push(
-          {
-            'id': j,
-            'name': GOOD_NAMES[j],
-            'picture': PATH + window.utils.getRandomElement(PICTURE_ROUTES),
-            'amount': window.utils.getRandomValue(MIN_VALUE_AMOUNT, MAX_VALUE_AMOUNT),
-            'price': window.utils.getRandomValue(MIN_VALUE_PRICE, MAX_VALUE_PRICE),
-            'weight': window.utils.getRandomValue(MIN_VALUE_WEIGHT, MAX_VALUE_WEIGHT),
-            'rating': {
-              'value': window.utils.getRandomValue(MIN_RATING_VALUE, MAX_RATING_VALUE),
-              'number': window.utils.getRandomValue(MIN_RATING_NUMBER, MAX_RATING_NUMBER)},
-            'nutritionFacts': {
-              'sugar': window.utils.getRandomBoolean(),
-              'energy': window.utils.getRandomValue(MIN_ENERGY_VALUE, MAX_ENERGY_VALUE),
-              'contents': window.utils.getRandomContent(GOOD_INGRIDIENTS)
-            }});
-    }
-    return generateGoods;
-  };
+  var error = document.querySelector('.modal--error');
 
   // добавление класса в зависимости от количества товара
   var addClassNameByGoodAvailability = function (element, good) {
@@ -165,7 +42,7 @@
     nutrition.textContent = good.nutritionFacts.sugar ? 'Содержит сахар' : 'Без сахара';
   };
 
-  // создание карточки в DOM
+  // создание карточки каталога в DOM
   var createDomCard = function (item) {
     var cardTemplate = document.querySelector('#card').content.querySelector('.catalog__card');
     var cardElement = cardTemplate.cloneNode(true);
@@ -173,8 +50,10 @@
     addClassNameByGoodAvailability(cardElement, item);
 
     var picture = cardElement.querySelector('.card__img');
-    picture.src = item.picture;
+    picture.src = PATH + item.picture;
     picture.alt = item.name;
+
+    cardElement.setAttribute('data-id', item.id);
 
     cardElement.querySelector('.card__title').textContent = item.name;
 
@@ -187,22 +66,52 @@
     setNutrition(cardElement, item);
     cardElement.querySelector('.card__composition-list').textContent = item.nutritionFacts.contents;
 
-    cardElement.addEventListener('click', function (evtClick) {
-      window.catalog.cardClickHandler(evtClick);
-    });
 
     return cardElement;
   };
 
+  // создание карточки корзины в DOM
+  var createBasketDomCard = function (item) {
+    var basketGood = document.querySelector('#card-order').content.querySelector('.goods__card');
+    var content = basketGood.cloneNode(true);
+
+    var picture = content.querySelector('.card-order__img');
+    picture.src = PATH + item.picture;
+    picture.alt = item.name;
+
+    content.setAttribute('data-id', item.id);
+
+    content.querySelector('.card-order__title').textContent = item.name;
+
+    var price = content.querySelector('.card-order__price');
+    price.textContent = item.price + ' ₽';
+
+    content.querySelector('.card-order__count').value = item.amount;
+
+    return content;
+  };
+
   // отрисовка карточек
-  var renderCards = function (count) {
-    var cardsArray = createArrayOfGoods(count);
+  var renderCards = function (items, block) {
     var fragment = document.createDocumentFragment();
-    cardsArray.forEach(function (good) {
-      var renderCard = createDomCard(good);
-      fragment.appendChild(renderCard);
-      catalog[good.name.toUpperCase()] = {'good': good, 'card': renderCard};
-    });
+    switch (block) {
+      case 'catalog':
+        items.forEach(function (item, i) {
+          item.id = 'good-' + i;
+          var card = createDomCard(item);
+          fragment.appendChild(card);
+          catalog[item.id] = {'good': item, 'card': card};
+          // catalog['good-' + i]['good'].id = 'good-' + i;
+        });
+        break;
+      case 'basket':
+        items.forEach(function (item) {
+          var card = createBasketDomCard(item);
+          fragment.appendChild(card);
+          basket[item.id] = {'good': item, 'card': card};
+        });
+        break;
+    }
     return fragment;
 
   };
@@ -210,14 +119,26 @@
   var init = function () {
     catalogCards.classList.remove('catalog__cards--load');
     catalogCards.querySelector('.catalog__load').classList.add('visually-hidden');
-    catalogCards.appendChild(renderCards(GOODS_AMOUNT));
+  };
+
+  // обработка успешного запроса и добавление айдишника
+  var successHandler = function (cards) {
+    catalogCards.appendChild(renderCards(cards, 'catalog'));
+  };
+
+  // обработка ошибок при запросе
+  var errorHandler = function () {
+    error.classList.remove('modal--hidden');
   };
 
   init();
+  window.backend.loadData(successHandler, errorHandler);
 
   window.data = {
     addClassNameByGoodAvailability: addClassNameByGoodAvailability,
     createDomCard: createDomCard,
+    createBasketDomCard: createBasketDomCard,
+    renderCards: renderCards,
     catalog: catalog,
     basket: basket
   };

@@ -9,6 +9,7 @@
   var rangeMax = range.querySelector('.range__price--max');
   var rangeMin = range.querySelector('.range__price--min');
 
+  // функция движения ползунка слейдера
   var pinMove = function (elem) {
     elem.addEventListener('mousedown', function (evt) {
       evt.preventDefault();

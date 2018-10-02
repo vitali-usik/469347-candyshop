@@ -17,6 +17,8 @@
       tabCourier.classList.add('visually-hidden');
       tabStore.classList.remove('visually-hidden');
     }
+
+    deliveryBlock.removeEventListener('click', deliveryClickHandler);
   };
 
   deliveryBlock.addEventListener('click', deliveryClickHandler);
