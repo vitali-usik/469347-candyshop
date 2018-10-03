@@ -14,7 +14,10 @@
   // var catalog = document.querySelector('.catalog__cards-wrap');
   // var notFound = document.querySelector('#empty-filters').content.querySelector('.catalog__empty-filter').cloneNode(true);
 
-  // функция движения ползунка слейдера
+  var fragment = document.createDocumentFragment();
+
+
+  // функция движения ползунка слайдера
   var pinMove = function (elem) {
     elem.addEventListener('mousedown', function (evt) {
       evt.preventDefault();
@@ -86,115 +89,125 @@
     });
   };
 
+  var removeItems = function () {
+    while (catalogCards.firstChild) {
+      catalogCards.removeChild(catalogCards.firstChild);
+    }
+  };
+
   // фильтр по типу продукта
   var filterByKind = function (evt, items) {
     evt.preventDefault();
     var target = evt.target.innerText;
-    // var count = 0;
+    removeItems();
     Object.keys(items)
     .forEach(function (id) {
-      items[id].card.remove();
       if (items[id].good.kind === target) {
-        // count++;
-        catalogCards.appendChild(items[id].card);
+        var card = window.data.createDomCard(items[id].good);
+        fragment.appendChild(card);
       }
-      return items[id].good;
     });
+    catalogCards.appendChild(fragment);
   };
 
-
   // фильтр по сахару и глютену
-  var filterByFacts = function (evt, items, fact) {
-    evt.preventDefault();
+  var filterByFacts = function (items, fact) {
+    removeItems();
     Object.keys(items)
     .forEach(function (id) {
-      items[id].card.remove();
-      if (items[id].good.nutritionFacts[fact] === false) {
-        catalogCards.appendChild(items[id].card);
+      if (!items[id].good.nutritionFacts[fact]) {
+        var card = window.data.createDomCard(items[id].good);
+        fragment.appendChild(card);
       }
-      return items[id].good;
     });
+    catalogCards.appendChild(fragment);
   };
 
   // фильтр по вегетаринству
-  var filterByVegan = function (evt, items) {
-    evt.preventDefault();
+  var filterByVegan = function (items) {
+    removeItems();
     Object.keys(items)
     .forEach(function (id) {
-      items[id].card.remove();
-      if (items[id].good.nutritionFacts['vegetarian'] === true) {
-        catalogCards.appendChild(items[id].card);
+      if (items[id].good.nutritionFacts['vegetarian']) {
+        var card = window.data.createDomCard(items[id].good);
+        fragment.appendChild(card);
       }
-      return items[id].good;
     });
+    catalogCards.appendChild(fragment);
   };
 
   // фильтр по наличию
-  var filterByAvailability = function (evt, items) {
-    evt.preventDefault();
+  var filterByAvailability = function (items) {
     Object.keys(items)
     .forEach(function (id) {
       items[id].card.remove();
       if (items[id].good.amount > 0) {
         catalogCards.appendChild(items[id].card);
       }
-      return items[id].good;
     });
   };
 
   // фильтр по избранному
-  var filterBySelected = function (evt, items) {
-    evt.preventDefault();
+  var filterBySelected = function (items) {
     Object.keys(items)
     .forEach(function (id) {
       items[id].card.remove();
-      var select = items[id].card.getAttribute('data-selected');
-      if (select === 'true') {
+      if (items[id].good.isFavorite) {
         catalogCards.appendChild(items[id].card);
       }
-      return items[id].good;
     });
   };
 
   // фильтр "показать все"
-  var showAll = function (evt, items) {
-    evt.preventDefault();
+  var showAll = function (items) {
     Object.keys(items)
     .forEach(function (id) {
+      items[id].card.remove();
       catalogCards.appendChild(items[id].card);
     });
   };
 
-  var filterByMinPrice = function () {
 
+  // счетчик для различных типов товаров
+  var fillTypes = function (items) {
+    window.data.nutritionFacts['Без сахара'] = 0;
+    window.data.nutritionFacts['Безглютеновое'] = 0;
+    window.data.nutritionFacts['Вегетарианское'] = 0;
+    Object.keys(items).forEach(function (id) {
+      if (window.data.types[items[id].good.kind]) {
+        window.data.types[items[id].good.kind]++;
+      } else {
+        window.data.types[items[id].good.kind] = 1;
+      }
+      if (!items[id].good.nutritionFacts.sugar) {
+        window.data.nutritionFacts['Без сахара']++;
+      }
+      if (!items[id].good.nutritionFacts.gluten) {
+        window.data.nutritionFacts['Безглютеновое']++;
+      }
+      if (items[id].good.nutritionFacts.vegetarian) {
+        window.data.nutritionFacts['Вегетарианское']++;
+      }
+    });
   };
 
   var filterBtnsHandler = function (evt) {
     evt.preventDefault();
     var target = evt.target.innerText;
-    if (target === 'Мороженное' || target === 'Газировка' || target === 'Жевательная резинка' || target === 'Мармелад' || target === 'Зефир') {
+    if (target === 'Мороженое' || target === 'Газировка' || target === 'Жевательная резинка' || target === 'Мармелад' || target === 'Зефир') {
       filterByKind(evt, window.data.catalog);
-    }
-    if (target === 'Без сахара') {
-      filterByFacts(evt, window.data.catalog, 'sugar');
-    }
-    if (target === 'Безглютеновое') {
-      filterByFacts(evt, window.data.catalog, 'gluten');
-    }
-    if (target === 'Вегетарианское') {
-      filterByVegan(evt, window.data.catalog);
-    }
-    if (target === 'В наличии') {
-      filterByAvailability(evt, window.data.catalog);
-    }
-    if (target === 'Только избранное') {
-      filterBySelected(evt, window.data.catalog);
-    }
-    if (target === 'Показать всё') {
-      showAll(evt, window.data.catalog);
-    }
-    if (target === 'Сначала популярные') {
-      filterByMinPrice(evt, window.data.catalog);
+    } else if (target === 'Без сахара') {
+      filterByFacts(window.data.catalog, 'sugar');
+    } else if (target === 'Безглютеновое') {
+      filterByFacts(window.data.catalog, 'gluten');
+    } else if (target === 'Вегетарианское') {
+      filterByVegan(window.data.catalog);
+    } else if (target === 'В наличии') {
+      filterByAvailability(window.data.catalog);
+    } else if (target === 'Только избранное') {
+      filterBySelected(window.data.catalog);
+    } else if (target === 'Показать всё' || target === 'Сначала популярные') {
+      showAll(window.data.catalog);
     }
   };
 
@@ -202,6 +215,10 @@
   pinMove(rangeLeft);
 
   sidebar.addEventListener('click', filterBtnsHandler);
+
+  window.filters = {
+    fillTypes: fillTypes
+  };
 
 
 })();

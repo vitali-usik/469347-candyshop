@@ -29,11 +29,11 @@
     } else if (target.classList.contains('card__btn-favorite')) {
       if (target.classList.contains('card__btn-favorite--selected')) {
         target.classList.remove('card__btn-favorite--selected');
-        window.data.catalog[goodId]['card'].setAttribute('data-selected', false);
+        window.data.catalog[goodId]['good'].isFavorite = false;
         target.blur();
       } else {
         target.classList.add('card__btn-favorite--selected');
-        window.data.catalog[goodId]['card'].setAttribute('data-selected', true);
+        window.data.catalog[goodId]['good'].isFavorite = true;
         target.blur();
       }
     } else if (target.classList.contains('card__btn')) {

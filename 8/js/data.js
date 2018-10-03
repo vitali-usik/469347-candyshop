@@ -15,6 +15,10 @@
 
   var error = document.querySelector('.modal--error');
 
+  var types = [];
+
+  var nutritionFacts = [];
+
   // добавление класса в зависимости от количества товара
   var addClassNameByGoodAvailability = function (element, good) {
     if (good.amount < 6) {
@@ -98,11 +102,12 @@
       case 'catalog':
         items.forEach(function (item, i) {
           item.id = 'good-' + i;
+          item.isFavorite = false;
           var card = createDomCard(item);
           fragment.appendChild(card);
           catalog[item.id] = {'good': item, 'card': card};
-          // catalog['good-' + i]['good'].id = 'good-' + i;
         });
+        window.filters.fillTypes(catalog);
         break;
       case 'basket':
         items.forEach(function (item) {
@@ -113,7 +118,6 @@
         break;
     }
     return fragment;
-
   };
 
   var init = function () {
@@ -124,6 +128,7 @@
   // обработка успешного запроса и добавление айдишника
   var successHandler = function (cards) {
     catalogCards.appendChild(renderCards(cards, 'catalog'));
+    init();
   };
 
   // обработка ошибок при запросе
@@ -131,7 +136,6 @@
     error.classList.remove('modal--hidden');
   };
 
-  init();
   window.backend.loadData(successHandler, errorHandler);
 
   window.data = {
@@ -139,7 +143,10 @@
     createDomCard: createDomCard,
     createBasketDomCard: createBasketDomCard,
     renderCards: renderCards,
+    successHandler: successHandler,
     catalog: catalog,
-    basket: basket
+    basket: basket,
+    types: types,
+    nutritionFacts: nutritionFacts
   };
 })();

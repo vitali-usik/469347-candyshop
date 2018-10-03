@@ -18,7 +18,8 @@
       tabStore.classList.remove('visually-hidden');
     }
 
-    deliveryBlock.removeEventListener('click', deliveryClickHandler);
+    window.payment.inputsToggleHandler(tabStore);
+    window.payment.inputsToggleHandler(tabCourier);
   };
 
   deliveryBlock.addEventListener('click', deliveryClickHandler);
