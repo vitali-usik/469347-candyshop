@@ -86,6 +86,16 @@
     }
   });
 
+  var inputsToggleHandler = function (element) {
+    var inputs = element.querySelectorAll('input');
+    inputs.forEach(function (input) {
+      if (element.classList.contains('visually-hidden')) {
+        input.disabled = true;
+      } else {
+        input.disabled = false;
+      }
+    });
+  };
 
   // добавляем тоггл на переключение вкладок
   var paymentBtnHandler = function (evt) {
@@ -98,7 +108,9 @@
       paymentCash.classList.add('visually-hidden');
       paymentCard.classList.remove('visually-hidden');
     }
+    inputsToggleHandler(paymentCard);
   };
+
 
   // вешаем обработчик на весь блок и меняем статус при изменении
   paymentCard.addEventListener('change', changeStatus);
@@ -107,6 +119,7 @@
   paymentBtn.addEventListener('click', paymentBtnHandler);
 
   window.payment = {
-    checkCardNumber: checkCardNumber
+    checkCardNumber: checkCardNumber,
+    inputsToggleHandler: inputsToggleHandler
   };
 })();

@@ -16,7 +16,8 @@
 
   var fragment = document.createDocumentFragment();
 
-  // функция движения ползунка слейдера
+
+  // функция движения ползунка слайдера
   var pinMove = function (elem) {
     elem.addEventListener('mousedown', function (evt) {
       evt.preventDefault();
@@ -88,44 +89,51 @@
     });
   };
 
+  var removeItems = function () {
+    while (catalogCards.firstChild) {
+      catalogCards.removeChild(catalogCards.firstChild);
+    }
+  };
+
   // фильтр по типу продукта
   var filterByKind = function (evt, items) {
     evt.preventDefault();
     var target = evt.target.innerText;
-    // var count = 0;
-    catalogCards.removeChild(fragment);
+    removeItems();
     Object.keys(items)
     .forEach(function (id) {
       if (items[id].good.kind === target) {
         var card = window.data.createDomCard(items[id].good);
-        console.log(card);
         fragment.appendChild(card);
-        catalogCards.appendChild(fragment);
       }
     });
+    catalogCards.appendChild(fragment);
   };
-
 
   // фильтр по сахару и глютену
   var filterByFacts = function (items, fact) {
+    removeItems();
     Object.keys(items)
     .forEach(function (id) {
-      items[id].card.remove();
       if (!items[id].good.nutritionFacts[fact]) {
-        catalogCards.appendChild(items[id].card);
+        var card = window.data.createDomCard(items[id].good);
+        fragment.appendChild(card);
       }
     });
+    catalogCards.appendChild(fragment);
   };
 
   // фильтр по вегетаринству
   var filterByVegan = function (items) {
+    removeItems();
     Object.keys(items)
     .forEach(function (id) {
-      items[id].card.remove();
       if (items[id].good.nutritionFacts['vegetarian']) {
-        catalogCards.appendChild(items[id].card);
+        var card = window.data.createDomCard(items[id].good);
+        fragment.appendChild(card);
       }
     });
+    catalogCards.appendChild(fragment);
   };
 
   // фильтр по наличию
@@ -152,19 +160,13 @@
 
   // фильтр "показать все"
   var showAll = function (items) {
+    removeItems();
     Object.keys(items)
     .forEach(function (id) {
-      catalogCards.appendChild(items[id].card);
+      var card = window.data.createDomCard(items[id].good);
+      fragment.appendChild(card);
     });
-  };
-
-
-  var filterByMinPrice = function () {
-
-  };
-
-  var counter = function (items) {
-
+    catalogCards.appendChild(fragment);
   };
 
   var filterBtnsHandler = function (evt) {
