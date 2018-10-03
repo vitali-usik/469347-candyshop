@@ -160,13 +160,11 @@
 
   // фильтр "показать все"
   var showAll = function (items) {
-    removeItems();
     Object.keys(items)
     .forEach(function (id) {
-      var card = window.data.createDomCard(items[id].good);
-      fragment.appendChild(card);
+      items[id].card.remove();
+      catalogCards.appendChild(items[id].card);
     });
-    catalogCards.appendChild(fragment);
   };
 
   var filterBtnsHandler = function (evt) {
