@@ -167,6 +167,30 @@
     });
   };
 
+
+  // счетчик для различных типов товаров
+  var fillTypes = function (items) {
+    window.data.nutritionFacts['Без сахара'] = 0;
+    window.data.nutritionFacts['Безглютеновое'] = 0;
+    window.data.nutritionFacts['Вегетарианское'] = 0;
+    Object.keys(items).forEach(function (id) {
+      if (window.data.types[items[id].good.kind]) {
+        window.data.types[items[id].good.kind]++;
+      } else {
+        window.data.types[items[id].good.kind] = 1;
+      }
+      if (!items[id].good.nutritionFacts.sugar) {
+        window.data.nutritionFacts['Без сахара']++;
+      }
+      if (!items[id].good.nutritionFacts.gluten) {
+        window.data.nutritionFacts['Безглютеновое']++;
+      }
+      if (items[id].good.nutritionFacts.vegetarian) {
+        window.data.nutritionFacts['Вегетарианское']++;
+      }
+    });
+  };
+
   var filterBtnsHandler = function (evt) {
     evt.preventDefault();
     var target = evt.target.innerText;
@@ -191,6 +215,10 @@
   pinMove(rangeLeft);
 
   sidebar.addEventListener('click', filterBtnsHandler);
+
+  window.filters = {
+    fillTypes: fillTypes
+  };
 
 
 })();

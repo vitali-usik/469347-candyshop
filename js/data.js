@@ -15,6 +15,10 @@
 
   var error = document.querySelector('.modal--error');
 
+  var types = [];
+
+  var nutritionFacts = [];
+
   // добавление класса в зависимости от количества товара
   var addClassNameByGoodAvailability = function (element, good) {
     if (good.amount < 6) {
@@ -103,6 +107,7 @@
           fragment.appendChild(card);
           catalog[item.id] = {'good': item, 'card': card};
         });
+        window.filters.fillTypes(catalog);
         break;
       case 'basket':
         items.forEach(function (item) {
@@ -140,6 +145,8 @@
     renderCards: renderCards,
     successHandler: successHandler,
     catalog: catalog,
-    basket: basket
+    basket: basket,
+    types: types,
+    nutritionFacts: nutritionFacts
   };
 })();
