@@ -210,10 +210,10 @@
 
   // initCountKind(itemsLabel);
 
+
   pinMove(rangeRight);
   pinMove(rangeLeft);
 
   sidebar.addEventListener('click', filterBtnsHandler);
-
 
 })();

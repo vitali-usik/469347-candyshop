@@ -3,7 +3,7 @@
 (function () {
   var PATH = 'img/cards/';
 
-  var NUMBERS = ['one', 'two', 'three', 'four', 'five'];
+  var NUMBERS = ['zero', 'one', 'two', 'three', 'four', 'five'];
 
   var PRICE_AMOUNT_NODE_INDEX = 0;
   var PRICE_WEIGHT_NODE_INDEX = 2;
@@ -17,6 +17,26 @@
 
   var types = [];
   var nutritionFacts = [];
+
+  var order = document.querySelector('#order');
+
+  var inputs = order.querySelectorAll('input');
+  var fieldsets = order.querySelectorAll('fieldset');
+
+  var inputsDisabled = function (element, items) {
+    element.forEach(function (input) {
+      if (input.classList.contains('toggle-btn__input')) {
+        return;
+      }
+      if (Object.keys(items).length === 0) {
+        input.disabled = true;
+        input.required = false;
+      } else {
+        input.disabled = false;
+        input.required = true;
+      }
+    });
+  };
 
   // счетчик для различных типов товаров
   var fillTypes = function (items) {
@@ -50,9 +70,9 @@
     if (good.amount < 6) {
       element.classList.remove('card--in-stock');
     }
-    if (good.amount > 0) {
+    if (good.amount >= 1 && good.amount < 5) {
       element.classList.add('card--little');
-    } else {
+    } else if (good.amount === 0) {
       element.classList.add('card--soon');
     }
   };
@@ -155,6 +175,7 @@
   var init = function () {
     catalogCards.classList.remove('catalog__cards--load');
     catalogCards.querySelector('.catalog__load').classList.add('visually-hidden');
+    // inputsDisabled(order, window.data.basket);
   };
 
   // обработка успешного запроса и добавление айдишника
@@ -167,6 +188,11 @@
   var errorHandler = function () {
     error.classList.remove('modal--hidden');
   };
+
+  order.addEventListener('click', function () {
+    inputsDisabled(inputs, window.data.basket);
+    inputsDisabled(fieldsets, window.data.basket);
+  });
 
   window.backend.loadData(successHandler, errorHandler);
 
