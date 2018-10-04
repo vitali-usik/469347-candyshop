@@ -10,6 +10,9 @@
   var rangeMax = range.querySelector('.range__price--max');
   var rangeMin = range.querySelector('.range__price--min');
 
+  // var itemsCount = document.querySelectorAll('.input-btn__item-count');
+  // var itemsLabel = document.querySelectorAll('.input-btn__label');
+
   var catalogCards = document.querySelector('.catalog__cards');
   // var catalog = document.querySelector('.catalog__cards-wrap');
   // var notFound = document.querySelector('#empty-filters').content.querySelector('.catalog__empty-filter').cloneNode(true);
@@ -97,7 +100,6 @@
 
   // фильтр по типу продукта
   var filterByKind = function (evt, items) {
-    evt.preventDefault();
     var target = evt.target.innerText;
     removeItems();
     Object.keys(items)
@@ -110,85 +112,68 @@
     catalogCards.appendChild(fragment);
   };
 
-  // фильтр по сахару и глютену
-  var filterByFacts = function (items, fact) {
+  // фильтр по сахару, глютену и вегетарианству
+  var filteByFact = function (items, fact) {
     removeItems();
-    Object.keys(items)
-    .forEach(function (id) {
-      if (!items[id].good.nutritionFacts[fact]) {
-        var card = window.data.createDomCard(items[id].good);
-        fragment.appendChild(card);
-      }
-    });
-    catalogCards.appendChild(fragment);
-  };
-
-  // фильтр по вегетаринству
-  var filterByVegan = function (items) {
-    removeItems();
-    Object.keys(items)
-    .forEach(function (id) {
-      if (items[id].good.nutritionFacts['vegetarian']) {
-        var card = window.data.createDomCard(items[id].good);
-        fragment.appendChild(card);
-      }
-    });
+    switch (fact) {
+      case 'sugar':
+      case 'gluten':
+        Object.keys(items)
+        .forEach(function (id) {
+          if (!items[id].good.nutritionFacts[fact]) {
+            var card = window.data.createDomCard(items[id].good);
+            fragment.appendChild(card);
+          }
+        });
+        break;
+      case 'vegetarian':
+        Object.keys(items)
+        .forEach(function (id) {
+          if (items[id].good.nutritionFacts['vegetarian']) {
+            var card = window.data.createDomCard(items[id].good);
+            fragment.appendChild(card);
+          }
+        });
+    }
     catalogCards.appendChild(fragment);
   };
 
   // фильтр по наличию
   var filterByAvailability = function (items) {
+    removeItems();
     Object.keys(items)
     .forEach(function (id) {
-      items[id].card.remove();
       if (items[id].good.amount > 0) {
-        catalogCards.appendChild(items[id].card);
+        var card = window.data.createDomCard(items[id].good);
+        fragment.appendChild(card);
       }
     });
+    catalogCards.appendChild(fragment);
   };
 
   // фильтр по избранному
   var filterBySelected = function (items) {
+    removeItems();
     Object.keys(items)
     .forEach(function (id) {
       items[id].card.remove();
       if (items[id].good.isFavorite) {
-        catalogCards.appendChild(items[id].card);
+        var card = window.data.createDomCard(items[id].good);
+        fragment.appendChild(card);
       }
     });
+    catalogCards.appendChild(fragment);
   };
 
   // фильтр "показать все"
   var showAll = function (items) {
+    removeItems();
     Object.keys(items)
     .forEach(function (id) {
-      items[id].card.remove();
-      catalogCards.appendChild(items[id].card);
+      var card = window.data.createDomCard(items[id].good);
+      fragment.appendChild(card);
     });
-  };
-
-
-  // счетчик для различных типов товаров
-  var fillTypes = function (items) {
-    window.data.nutritionFacts['Без сахара'] = 0;
-    window.data.nutritionFacts['Безглютеновое'] = 0;
-    window.data.nutritionFacts['Вегетарианское'] = 0;
-    Object.keys(items).forEach(function (id) {
-      if (window.data.types[items[id].good.kind]) {
-        window.data.types[items[id].good.kind]++;
-      } else {
-        window.data.types[items[id].good.kind] = 1;
-      }
-      if (!items[id].good.nutritionFacts.sugar) {
-        window.data.nutritionFacts['Без сахара']++;
-      }
-      if (!items[id].good.nutritionFacts.gluten) {
-        window.data.nutritionFacts['Безглютеновое']++;
-      }
-      if (items[id].good.nutritionFacts.vegetarian) {
-        window.data.nutritionFacts['Вегетарианское']++;
-      }
-    });
+    catalogCards.appendChild(fragment);
   };
 
   var filterBtnsHandler = function (evt) {
@@ -197,11 +182,11 @@
     if (target === 'Мороженое' || target === 'Газировка' || target === 'Жевательная резинка' || target === 'Мармелад' || target === 'Зефир') {
       filterByKind(evt, window.data.catalog);
     } else if (target === 'Без сахара') {
-      filterByFacts(window.data.catalog, 'sugar');
+      filteByFact(window.data.catalog, 'sugar');
     } else if (target === 'Безглютеновое') {
-      filterByFacts(window.data.catalog, 'gluten');
+      filteByFact(window.data.catalog, 'gluten');
     } else if (target === 'Вегетарианское') {
-      filterByVegan(window.data.catalog);
+      filteByFact(window.data.catalog, 'vegetarian');
     } else if (target === 'В наличии') {
       filterByAvailability(window.data.catalog);
     } else if (target === 'Только избранное') {
@@ -211,14 +196,24 @@
     }
   };
 
+  /* var initCountKind = function (items) {
+    items.forEach(function (item, i) {
+      console.log(item);
+      console.log(Object.keys(window.data.types));
+       if (items[i].innerText === window.data.types[i]) {
+        item[i].textContent = window.data.types[i];
+      }
+    });
+  }; */
+
+  // console.log(window.data.types);
+
+  // initCountKind(itemsLabel);
+
   pinMove(rangeRight);
   pinMove(rangeLeft);
 
   sidebar.addEventListener('click', filterBtnsHandler);
-
-  window.filters = {
-    fillTypes: fillTypes
-  };
 
 
 })();

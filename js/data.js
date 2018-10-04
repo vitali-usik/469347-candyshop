@@ -16,8 +16,34 @@
   var error = document.querySelector('.modal--error');
 
   var types = [];
-
   var nutritionFacts = [];
+
+  // счетчик для различных типов товаров
+  var fillTypes = function (items) {
+    Object.keys(items).forEach(function (id) {
+      if (types[items[id].good.kind]) {
+        types[items[id].good.kind]++;
+      } else {
+        types[items[id].good.kind] = 1;
+      }
+      if (!items[id].good.nutritionFacts.sugar) {
+        nutritionFacts['Без сахара']++;
+      } else {
+        nutritionFacts['Без сахара'] = 1;
+      }
+      if (!items[id].good.nutritionFacts.gluten) {
+        nutritionFacts['Безглютеновое']++;
+      } else {
+        nutritionFacts['Безглютеновое'] = 1;
+      }
+      if (items[id].good.nutritionFacts.vegetarian) {
+        nutritionFacts['Вегетарианское']++;
+      } else {
+        nutritionFacts['Вегетарианское'] = 1;
+      }
+    });
+  };
+
 
   // добавление класса в зависимости от количества товара
   var addClassNameByGoodAvailability = function (element, good) {
@@ -70,6 +96,9 @@
     setNutrition(cardElement, item);
     cardElement.querySelector('.card__composition-list').textContent = item.nutritionFacts.contents;
 
+    /*  if (item.isFavorite === true) {
+      document.querySelector('.card__btn-favorite').classList.add('card__btn-favorite--selected');
+    } */
 
     return cardElement;
   };
@@ -102,12 +131,11 @@
       case 'catalog':
         items.forEach(function (item, i) {
           item.id = 'good-' + i;
-          item.isFavorite = false;
           var card = createDomCard(item);
           fragment.appendChild(card);
           catalog[item.id] = {'good': item, 'card': card};
         });
-        window.filters.fillTypes(catalog);
+        fillTypes(catalog);
         break;
       case 'basket':
         items.forEach(function (item) {
@@ -137,6 +165,7 @@
   };
 
   window.backend.loadData(successHandler, errorHandler);
+
 
   window.data = {
     addClassNameByGoodAvailability: addClassNameByGoodAvailability,
