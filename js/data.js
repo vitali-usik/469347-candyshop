@@ -66,6 +66,12 @@
     }
   };
 
+  var addClassByFavorite = function (element, good) {
+    if (good.isFavorite === true) {
+      element.querySelector('.card__btn-favorite').classList.add('card__btn-favorite--selected');
+    }
+  };
+
   // добавление значения в зависимости от состава товара
   var setNutrition = function (element, good) {
     var nutrition = element.querySelector('.card__characteristic');
@@ -96,9 +102,7 @@
     setNutrition(cardElement, item);
     cardElement.querySelector('.card__composition-list').textContent = item.nutritionFacts.contents;
 
-    /*  if (item.isFavorite === true) {
-      document.querySelector('.card__btn-favorite').classList.add('card__btn-favorite--selected');
-    } */
+    addClassByFavorite(cardElement, item);
 
     return cardElement;
   };
