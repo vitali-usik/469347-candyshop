@@ -109,26 +109,15 @@
   // фильтр по сахару, глютену и вегетарианству
   var filteByFact = function (items, fact) {
     removeItems();
-    switch (fact) {
-      case 'sugar':
-      case 'gluten':
-        Object.keys(items)
+    Object.keys(items)
         .forEach(function (id) {
-          if (!items[id].good.nutritionFacts[fact]) {
+          var isVegetarian = (fact === 'vegetarian' && items[id].good.nutritionFacts[fact]);
+          var noSugarOrGluten = (fact !== 'vegetarian' && !items[id].good.nutritionFacts[fact]);
+          if (isVegetarian || noSugarOrGluten) {
             var card = window.data.createDomCard(items[id].good);
             fragment.appendChild(card);
           }
         });
-        break;
-      case 'vegetarian':
-        Object.keys(items)
-        .forEach(function (id) {
-          if (items[id].good.nutritionFacts['vegetarian']) {
-            var card = window.data.createDomCard(items[id].good);
-            fragment.appendChild(card);
-          }
-        });
-    }
     catalogCards.appendChild(fragment);
   };
 
@@ -150,7 +139,6 @@
     removeItems();
     Object.keys(items)
     .forEach(function (id) {
-      items[id].card.remove();
       if (items[id].good.isFavorite) {
         var card = window.data.createDomCard(items[id].good);
         fragment.appendChild(card);
@@ -217,7 +205,7 @@
     });
   }; */
   // показывает количество товаров, подходящих под конкретные фильтры
-  var initCountKind = function (labels, inputs) {
+  var initCountKind = function (labels, inputs, items) {
     labels.forEach(function (_, i) {
       var currentType = labels[i].innerText;
       if (window.data.types[currentType]) {
@@ -225,6 +213,12 @@
       }
       if (window.data.nutritionFacts[currentType]) {
         inputs[i].textContent = '(' + window.data.nutritionFacts[currentType] + ')';
+      }
+      if (currentType === 'Только избранное') {
+        inputs[i].textContent = '(' + 0 + ')';
+      }
+      if (currentType === 'В наличии') {
+        inputs[i].textContent = '(' + (Object.keys(items)).length + ')';
       }
     });
   };
