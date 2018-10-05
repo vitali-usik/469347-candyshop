@@ -15,55 +15,31 @@
 
   var error = document.querySelector('.modal--error');
 
-  var types = [];
-  var nutritionFacts = [];
-
-  var order = document.querySelector('#order');
-
-  var inputs = order.querySelectorAll('input');
-  var fieldsets = order.querySelectorAll('fieldset');
-
-  var inputsDisabled = function (element, items) {
-    element.forEach(function (input) {
-      if (input.classList.contains('toggle-btn__input')) {
-        return;
-      }
-      if (Object.keys(items).length === 0) {
-        input.disabled = true;
-        input.required = false;
-      } else {
-        input.disabled = false;
-        input.required = true;
-      }
-    });
+  var types = {};
+  var nutritionFacts = {
+    'Без сахара': 0,
+    'Безглютеновое': 0,
+    'Вегетарианское': 0
   };
 
   // счетчик для различных типов товаров
   var fillTypes = function (items) {
-    Object.keys(items).forEach(function (id) {
-      if (types[items[id].good.kind]) {
-        types[items[id].good.kind]++;
-      } else {
-        types[items[id].good.kind] = 1;
-      }
-      if (!items[id].good.nutritionFacts.sugar) {
-        nutritionFacts['Без сахара']++;
-      } else {
-        nutritionFacts['Без сахара'] = 1;
-      }
-      if (!items[id].good.nutritionFacts.gluten) {
-        nutritionFacts['Безглютеновое']++;
-      } else {
-        nutritionFacts['Безглютеновое'] = 1;
-      }
-      if (items[id].good.nutritionFacts.vegetarian) {
-        nutritionFacts['Вегетарианское']++;
-      } else {
-        nutritionFacts['Вегетарианское'] = 1;
-      }
-    });
+    if (types[items.good.kind]) {
+      types[items.good.kind]++;
+    } else {
+      types[items.good.kind] = 1;
+    }
+    if (!items.good.nutritionFacts.sugar) {
+      nutritionFacts['Без сахара']++;
+    }
+    if (!items.good.nutritionFacts.gluten) {
+      nutritionFacts['Безглютеновое']++;
+    }
+    if (items.good.nutritionFacts.vegetarian) {
+      nutritionFacts['Вегетарианское']++;
+    }
+    return nutritionFacts;
   };
-
 
   // добавление класса в зависимости от количества товара
   var addClassNameByGoodAvailability = function (element, good) {
@@ -87,7 +63,7 @@
   };
 
   var addClassByFavorite = function (element, good) {
-    if (good.isFavorite === true) {
+    if (good.isFavorite) {
       element.querySelector('.card__btn-favorite').classList.add('card__btn-favorite--selected');
     }
   };
@@ -158,8 +134,8 @@
           var card = createDomCard(item);
           fragment.appendChild(card);
           catalog[item.id] = {'good': item, 'card': card};
+          fillTypes(catalog[item.id]);
         });
-        fillTypes(catalog);
         break;
       case 'basket':
         items.forEach(function (item) {
@@ -188,11 +164,6 @@
   var errorHandler = function () {
     error.classList.remove('modal--hidden');
   };
-
-  order.addEventListener('click', function () {
-    inputsDisabled(inputs, window.data.basket);
-    inputsDisabled(fieldsets, window.data.basket);
-  });
 
   window.backend.loadData(successHandler, errorHandler);
 

@@ -11,7 +11,7 @@
   var rangeMin = range.querySelector('.range__price--min');
 
   // var itemsCount = document.querySelectorAll('.input-btn__item-count');
-  // var itemsLabel = document.querySelectorAll('.input-btn__label');
+  // var itemsLabel = sidebar.querySelectorAll('.input-btn__label');
 
   var catalogCards = document.querySelector('.catalog__cards');
   // var catalog = document.querySelector('.catalog__cards-wrap');
@@ -198,15 +198,14 @@
 
   /* var initCountKind = function (items) {
     items.forEach(function (item, i) {
-      console.log(item);
-      console.log(Object.keys(window.data.types));
-       if (items[i].innerText === window.data.types[i]) {
-        item[i].textContent = window.data.types[i];
-      }
-    });
+      var currentType = items[i].innerText; */
+  /*  console.log(currentType);
+      console.log(window.data.types['Мороженое']); */
+  /*  if (window.data.types[items[i].innerText]) {
+        items[i].textContent = window.data.types[items[i].innerText];
+      } */
+  /*   });
   }; */
-
-  // console.log(window.data.types);
 
   // initCountKind(itemsLabel);
 
