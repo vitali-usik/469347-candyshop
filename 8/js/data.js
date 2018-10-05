@@ -160,7 +160,7 @@
   // обработка успешного запроса
   var successHandler = function (cards) {
     catalogCards.appendChild(renderCards(cards, 'catalog')); // рендер карточек
-    window.filters.initCountKind(itemsLabel, itemsCount); // иницирование количества товаров определенного типа
+    window.filters.initCountKind(itemsLabel, itemsCount, catalog); // иницирование количества товаров определенного типа
     init(); // показ блока
   };
 
@@ -181,6 +181,9 @@
     catalog: catalog,
     basket: basket,
     types: types,
-    nutritionFacts: nutritionFacts
+    nutritionFacts: nutritionFacts,
+    sidebar: sidebar,
+    itemsLabel: itemsLabel,
+    itemsCount: itemsCount
   };
 })();

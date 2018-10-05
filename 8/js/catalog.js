@@ -15,6 +15,25 @@
     amount.value = item.amount;
   };
 
+  // обновляем количество добавленного в избранное
+  var updateSelectedAmount = function (items, arr) {
+    var selected = [];
+    Object.keys(items)
+    .forEach(function (id) {
+      if (items[id]['good'].isFavorite) {
+        selected.push(items[id].good);
+      } else {
+        delete selected[items[id].good];
+      }
+    });
+    arr.forEach(function (_, i) {
+      var current = window.data.itemsLabel[i].innerText;
+      if (current === 'Только избранное') {
+        window.data.itemsCount[i].textContent = '(' + selected.length + ')';
+      }
+    });
+  };
+
   var cardClickHandler = function (evt) {
     evt.preventDefault();
     var target = evt.target;
@@ -30,10 +49,12 @@
       if (target.classList.contains('card__btn-favorite--selected')) {
         target.classList.remove('card__btn-favorite--selected');
         window.data.catalog[goodId]['good'].isFavorite = false;
+        updateSelectedAmount(window.data.catalog, window.data.itemsLabel);
         target.blur();
       } else {
         target.classList.add('card__btn-favorite--selected');
         window.data.catalog[goodId]['good'].isFavorite = true;
+        updateSelectedAmount(window.data.catalog, window.data.itemsLabel);
         target.blur();
       }
     } else if (target.classList.contains('card__btn')) {
