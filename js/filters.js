@@ -10,8 +10,8 @@
   var rangeMax = range.querySelector('.range__price--max');
   var rangeMin = range.querySelector('.range__price--min');
 
-  var itemsCount = document.querySelectorAll('.input-btn__item-count');
-  var itemsLabel = sidebar.querySelectorAll('.input-btn__label');
+  // var itemsCount = document.querySelectorAll('.input-btn__item-count');
+  // var itemsLabel = sidebar.querySelectorAll('.input-btn__label');
 
   var catalogCards = document.querySelector('.catalog__cards');
   // var catalog = document.querySelector('.catalog__cards-wrap');
@@ -196,20 +196,18 @@
     }
   };
 
-  var initCountKind = function (items) {
+  /* var initCountKind = function (items) {
     items.forEach(function (item, i) {
-      var currentType = items[i].innerText;
-      /*  console.log(currentType);
+      var currentType = items[i].innerText; */
+  /*  console.log(currentType);
       console.log(window.data.types['Мороженое']); */
-      /*  if (window.data.types[items[i].innerText]) {
+  /*  if (window.data.types[items[i].innerText]) {
         items[i].textContent = window.data.types[items[i].innerText];
       } */
-    });
-  };
+  /*   });
+  }; */
 
-  console.log(window.data.nutritionFacts['Без сахара']);
-
-  initCountKind(itemsLabel);
+  // initCountKind(itemsLabel);
 
 
   pinMove(rangeRight);
