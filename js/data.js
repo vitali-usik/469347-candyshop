@@ -22,6 +22,10 @@
     'Вегетарианское': 0
   };
 
+  var sidebar = document.querySelector('.catalog__sidebar');
+  var itemsLabel = sidebar.querySelectorAll('.input-btn__label');
+  var itemsCount = document.querySelectorAll('.input-btn__item-count');
+
   // счетчик для различных типов товаров
   var fillTypes = function (items) {
     if (types[items.good.kind]) {
@@ -153,10 +157,11 @@
     catalogCards.querySelector('.catalog__load').classList.add('visually-hidden');
   };
 
-  // обработка успешного запроса и добавление айдишника
+  // обработка успешного запроса
   var successHandler = function (cards) {
-    catalogCards.appendChild(renderCards(cards, 'catalog'));
-    init();
+    catalogCards.appendChild(renderCards(cards, 'catalog')); // рендер карточек
+    window.filters.initCountKind(itemsLabel, itemsCount); // иницирование количества товаров определенного типа
+    init(); // показ блока
   };
 
   // обработка ошибок при запросе

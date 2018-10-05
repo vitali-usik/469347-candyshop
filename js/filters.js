@@ -10,9 +10,6 @@
   var rangeMax = range.querySelector('.range__price--max');
   var rangeMin = range.querySelector('.range__price--min');
 
-  // var itemsCount = document.querySelectorAll('.input-btn__item-count');
-  // var itemsLabel = sidebar.querySelectorAll('.input-btn__label');
-
   var catalogCards = document.querySelector('.catalog__cards');
 
   var fragment = document.createDocumentFragment();
@@ -88,7 +85,7 @@
 
     });
   };
-
+  // удаление всех карточек
   var removeItems = function () {
     while (catalogCards.firstChild) {
       catalogCards.removeChild(catalogCards.firstChild);
@@ -183,6 +180,8 @@
     });
   };
 
+
+  // хэндлер для работы с фильтрами в баре
   var filterBtnsHandler = function (evt) {
     evt.preventDefault();
     var target = evt.target.innerText;
@@ -206,7 +205,7 @@
   };
 
 
-  var showEmptyFilters = function () {
+  /* var showEmptyFilters = function () {
     var catalog = document.querySelector('.catalog__cards-wrap');
     var notFound = document.querySelector('#empty-filters').content.querySelector('.catalog__empty-filter').cloneNode(true);
     var btnSubmit = notFound.querySelector('.catalog__submit');
@@ -216,24 +215,27 @@
       evt.preventDefault();
       showAll(window.data.catalog);
     });
-  };
-
-  /* var initCountKind = function (items) {
-    items.forEach(function (item, i) {
-      var currentType = items[i].innerText; */
-  /*  console.log(currentType);
-      console.log(window.data.types['Мороженое']); */
-  /*  if (window.data.types[items[i].innerText]) {
-        items[i].textContent = window.data.types[items[i].innerText];
-      } */
-  /*   });
   }; */
-
-  // initCountKind(itemsLabel);
+  // показывает количество товаров, подходящих под конкретные фильтры
+  var initCountKind = function (labels, inputs) {
+    labels.forEach(function (_, i) {
+      var currentType = labels[i].innerText;
+      if (window.data.types[currentType]) {
+        inputs[i].textContent = '(' + window.data.types[currentType] + ')';
+      }
+      if (window.data.nutritionFacts[currentType]) {
+        inputs[i].textContent = '(' + window.data.nutritionFacts[currentType] + ')';
+      }
+    });
+  };
 
   pinMove(rangeRight);
   pinMove(rangeLeft);
 
   sidebar.addEventListener('click', filterBtnsHandler);
+
+  window.filters = {
+    initCountKind: initCountKind
+  };
 
 })();
