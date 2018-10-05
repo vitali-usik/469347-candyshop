@@ -151,7 +151,6 @@
   var init = function () {
     catalogCards.classList.remove('catalog__cards--load');
     catalogCards.querySelector('.catalog__load').classList.add('visually-hidden');
-    // inputsDisabled(order, window.data.basket);
   };
 
   // обработка успешного запроса и добавление айдишника
