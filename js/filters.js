@@ -159,14 +159,15 @@
   };
 
   /* var filterByMaxPrice = function (items) {
+    var priceArr = [];
     Object.keys(items)
     .forEach(function (id) {
-      var keysArr = Object.keys(items[id]);
-      console.log(keysArr);
-      .sort(function (a, b) {
-        return items[id].good.price[b] - items[id].good.price[a];
-      });
+      priceArr.push(items[id].good.price);
     });
+    priceArr.sort(function (a, b) {
+      return b - a;
+    });
+    console.log(priceArr);
   }; */
 
   /* var showEmptyFilters = function () {

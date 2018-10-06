@@ -130,6 +130,10 @@
     var target = evt.target;
     // находим ближайшего родителя к элементу на котором произошло событие
     var good = target.closest('.card-order');
+
+    if (!good) {
+      return;
+    }
     // достаем айдишник товара
     var goodId = good.getAttribute('data-id');
     var currentGood = window.data.basket[goodId];
