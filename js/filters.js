@@ -84,7 +84,7 @@
           // динамическое изменение цены
           rangeMin.textContent = newLeft;
         } else if (elem.classList.contains('range__btn--right')) {
-          rangeFill.style.right = (rangeLine.offsetWidth - newLeft) + 'px';
+          rangeFill.style.right = (rangeLine.offsetWidth - elem.offsetWidth - newLeft) + 'px';
           // если правый пин заходит за левый
           if (rangeLeft.offsetLeft > newLeft) {
             newLeft = rangeLeft.offsetLeft;
@@ -117,7 +117,7 @@
   };
 
   // фильтр по типу продукта
-  var filterByKind = function (evt, items) {
+  var filterByKind = window.utils.debounce(function (evt, items) {
     var target = evt.target.innerText;
     removeItems();
     Object.keys(items)
@@ -127,10 +127,10 @@
       }
     });
     catalogCards.appendChild(fragment);
-  };
+  });
 
   // фильтр по сахару, глютену и вегетарианству
-  var filteByFact = function (items, fact) {
+  var filteByFact = window.utils.debounce(function (items, fact) {
     removeItems();
     Object.keys(items)
         .forEach(function (id) {
@@ -141,10 +141,10 @@
           }
         });
     catalogCards.appendChild(fragment);
-  };
+  });
 
   // фильтр по наличию
-  var filterByAvailability = function (items) {
+  var filterByAvailability = window.utils.debounce(function (items) {
     removeItems();
     Object.keys(items)
     .forEach(function (id) {
@@ -153,10 +153,13 @@
       }
     });
     catalogCards.appendChild(fragment);
-  };
+    if ((catalogCards.querySelectorAll('.catalog__card')).length === 0) {
+      showEmptyFilters();
+    }
+  });
 
   // фильтр по избранному
-  var filterBySelected = function (items) {
+  var filterBySelected = window.utils.debounce(function (items) {
     removeItems();
     Object.keys(items)
     .forEach(function (id) {
@@ -165,17 +168,20 @@
       }
     });
     catalogCards.appendChild(fragment);
-  };
+    if ((catalogCards.querySelectorAll('.catalog__card')).length === 0) {
+      showEmptyFilters();
+    }
+  });
 
   // фильтр "показать все"
-  var showAll = function (items) {
+  var showAll = window.utils.debounce(function (items) {
     removeItems();
     Object.keys(items)
     .forEach(function (id) {
       addCardToFragment(items[id].good, fragment);
     });
     catalogCards.appendChild(fragment);
-  };
+  });
 
   var compareMax = function (a, b) {
     if (a.price > b.price) {
@@ -209,7 +215,7 @@
   };
 
   // фильтр по цене
-  var filterByPrice = function (items, value) {
+  var filterByPrice = window.utils.debounce(function (items, value) {
     var priceArr = [];
     removeItems();
     Object.keys(items)
@@ -226,10 +232,10 @@
       addCardToFragment(priceArr[i], fragment);
     });
     catalogCards.appendChild(fragment);
-  };
+  });
 
   // фильтр по популярности
-  var filterByPopular = function (items) {
+  var filterByPopular = window.utils.debounce(function (items) {
     var ratingArr = [];
     removeItems();
     Object.keys(items)
@@ -241,9 +247,9 @@
       addCardToFragment(ratingArr[i], fragment);
     });
     catalogCards.appendChild(fragment);
-  };
+  });
 
-  var filterByPriceSlider = function (items) {
+  var filterByPriceSlider = window.utils.debounce(function (items) {
     var filteredItems = [];
     removeItems();
     Object.keys(items)
@@ -260,7 +266,7 @@
     if ((catalogCards.querySelectorAll('.catalog__card')).length === 0) {
       showEmptyFilters();
     }
-  };
+  });
 
   // хэндлер для работы с фильтрами в баре
   var filterBtnsHandler = function (evt) {
@@ -286,9 +292,6 @@
       filterByPrice(window.data.catalog, 'min');
     } else if (target === 'По рейтингу') {
       filterByPopular(window.data.catalog);
-    }
-    if ((catalogCards.querySelectorAll('.catalog__card')).length === 0) {
-      showEmptyFilters();
     }
   };
 

@@ -5,6 +5,9 @@
   var ENTER_KEYCODE = 13;
 
   var GOODS_CONTENT = 4;
+
+  var DEBOUNCE_INTERVAL = 500;
+
   // нахождение случайного элемента массива
   var getRandomElement = function (arr) {
     var randomIndex = Math.floor(Math.random() * arr.length);
@@ -31,11 +34,28 @@
     return getRandomValue(0, 1) === 1;
   };
 
+  var debounce = function (fun) {
+    var lastTimeout = null;
+
+    return function () {
+      var args = arguments;
+      if (lastTimeout) {
+        clearTimeout(lastTimeout);
+      }
+      lastTimeout = setTimeout(function () {
+        fun.apply(null, args);
+      }, DEBOUNCE_INTERVAL);
+    };
+  };
+
   window.utils = {
     getRandomElement: getRandomElement,
     getRandomValue: getRandomValue,
     getRandomContent: getRandomContent,
     getRandomBoolean: getRandomBoolean,
+    clearTimeout: clearTimeout,
+    setTimeout: setTimeout,
+    debounce: debounce,
     isEscEvent: function (evt, action) {
       if (evt.keyCode === ESC_KEYCODE) {
         action();
