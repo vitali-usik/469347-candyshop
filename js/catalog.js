@@ -59,6 +59,9 @@
     // находим ближайшего родителя к элементу на котором произошло событие
     var good = target.closest('.catalog__card');
     // достаем айдишник товара
+    if (!good) {
+      return;
+    }
     var goodId = good.getAttribute('data-id');
 
     if (target.classList.contains('card__btn-composition')) {
