@@ -152,11 +152,12 @@
       updateStockAmount(window.data.catalog, window.data.itemsLabel);
       // удаляем объект
       delete window.data.basket[goodId];
+      window.data.addClassNameByGoodAvailability(catalogItem['card'], catalogItem['good']);
     } else if (target.classList.contains('card-order__btn--increase') && catalogItem['good'].amount > 0) {
       currentGood['card'].querySelector('.card-order__count').value++;
       updateAmount(goodId, 1);
       updateStockAmount(window.data.catalog, window.data.itemsLabel);
-      window.data.addClassNameByGoodAvailability(catalogItem['card'], catalogItem['good']); // только здесь работает отслеживание класса в зависимости от количества товара
+      window.data.addClassNameByGoodAvailability(catalogItem['card'], catalogItem['good']);
     } else if (target.classList.contains('card-order__btn--decrease')) {
       currentGood['card'].querySelector('.card-order__count').value--;
       updateAmount(goodId, -1);
@@ -165,6 +166,7 @@
         basketCards.removeChild(currentGood['card']);
         delete window.data.basket[goodId];
       }
+      window.data.addClassNameByGoodAvailability(catalogItem['card'], catalogItem['good']);
     }
     if (Object.keys(window.data.basket).length === 0) {
       basketCards.classList.add('goods__cards--empty');

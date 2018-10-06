@@ -1,6 +1,8 @@
 'use strict';
 
 (function () {
+  var MIN_PRICE = 0;
+  var MAX_PRICE = 235;
   var sidebar = document.querySelector('.catalog__sidebar');
   var range = document.querySelector('.range');
   var rangeLine = document.querySelector('.range__filter');
@@ -10,8 +12,6 @@
   var rangeMax = range.querySelector('.range__price--max');
   var rangeMin = range.querySelector('.range__price--min');
   var rangeCount = range.querySelector('.range__count');
-  var minPrice = 0;
-  var maxPrice = 235;
 
   var catalogCards = document.querySelector('.catalog__cards');
 
@@ -316,12 +316,12 @@
   };
 
   var init = function () {
-    rangeMax.textContent = maxPrice;
-    rangeMin.textContent = minPrice;
-    rangeFill.style.right = minPrice + 'px';
-    rangeFill.style.left = minPrice + 'px';
-    rangeRight.style.left = maxPrice + 'px';
-    rangeLeft.style.left = minPrice + 'px';
+    rangeMax.textContent = MAX_PRICE;
+    rangeMin.textContent = MIN_PRICE;
+    rangeFill.style.right = MIN_PRICE + 'px';
+    rangeFill.style.left = MIN_PRICE + 'px';
+    rangeRight.style.left = MAX_PRICE + 'px';
+    rangeLeft.style.left = MIN_PRICE + 'px';
   };
 
 

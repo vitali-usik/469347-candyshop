@@ -72,6 +72,7 @@
     }
     if (good.amount >= 1 && good.amount < 5) {
       element.classList.add('card--little');
+      element.classList.remove('card--soon');
     } else if (good.amount === 0) {
       element.classList.add('card--soon');
       element.classList.remove('card--little');
