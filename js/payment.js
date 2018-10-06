@@ -86,13 +86,21 @@
     }
   });
 
+  /* cardCvc.addEventListener('change', function () {
+    if (cardCvc.value < 100 || cardCvc.value > 999) {
+      cardCvc.setCustomValidity('Диапазон значений должен быть от 100 до 999');
+    }
+  }); */
+
   var inputsToggleHandler = function (element) {
     var inputs = element.querySelectorAll('input');
     inputs.forEach(function (input) {
       if (element.classList.contains('visually-hidden')) {
         input.disabled = true;
+        input.required = '';
       } else {
         input.disabled = false;
+        input.required = 'required';
       }
     });
   };
