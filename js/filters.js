@@ -9,10 +9,33 @@
   var rangeLeft = range.querySelector('.range__btn--left');
   var rangeMax = range.querySelector('.range__price--max');
   var rangeMin = range.querySelector('.range__price--min');
+  var rangeCount = range.querySelector('.range__count');
+  var minPrice = 0;
+  var maxPrice = 235;
 
   var catalogCards = document.querySelector('.catalog__cards');
 
   var fragment = document.createDocumentFragment();
+
+  // удаление всех карточек
+  var removeItems = function () {
+    while (catalogCards.firstChild) {
+      catalogCards.removeChild(catalogCards.firstChild);
+    }
+  };
+
+  // функция показа блока с пустым значением примененных фильтров
+  var showEmptyFilters = function () {
+    var notFound = document.querySelector('#empty-filters').content.querySelector('.catalog__empty-filter').cloneNode(true);
+    var btnSubmit = notFound.querySelector('.catalog__show-all');
+    removeItems();
+    catalogCards.appendChild(notFound);
+
+    btnSubmit.addEventListener('click', function (evt) {
+      evt.preventDefault();
+      showAll(window.data.catalog);
+    });
+  };
 
   // функция движения ползунка слайдера
   var pinMove = function (elem) {
@@ -72,6 +95,8 @@
           // динамическое изменение цены
           rangeMax.textContent = newLeft;
         }
+
+        filterByPriceSlider(window.data.catalog);
       };
       // снимаем обработчики при отпускании кнопки мыши
       var onMouseUp = function (upEvt) {
@@ -84,12 +109,6 @@
       document.addEventListener('mouseup', onMouseUp);
 
     });
-  };
-  // удаление всех карточек
-  var removeItems = function () {
-    while (catalogCards.firstChild) {
-      catalogCards.removeChild(catalogCards.firstChild);
-    }
   };
 
   var addCardToFragment = function (good, frag) {
@@ -209,6 +228,7 @@
     catalogCards.appendChild(fragment);
   };
 
+  // фильтр по популярности
   var filterByPopular = function (items) {
     var ratingArr = [];
     removeItems();
@@ -223,18 +243,24 @@
     catalogCards.appendChild(fragment);
   };
 
-  /* var showEmptyFilters = function () {
-    var catalog = document.querySelector('.catalog__cards-wrap');
-    var notFound = document.querySelector('#empty-filters').content.querySelector('.catalog__empty-filter').cloneNode(true);
-    var btnSubmit = notFound.querySelector('.catalog__show-all');
-    catalog.appendChild(notFound);
-
-    btnSubmit.addEventListener('click', function (evt) {
-      evt.preventDefault();
-      showAll(window.data.catalog);
+  var filterByPriceSlider = function (items) {
+    var filteredItems = [];
+    removeItems();
+    Object.keys(items)
+    .forEach(function (id) {
+      if (items[id].good.price <= rangeMax.innerText && items[id].good.price >= rangeMin.innerText) {
+        filteredItems.push(items[id].good);
+      }
     });
-  }; */
-
+    rangeCount.textContent = '(' + filteredItems.length + ')';
+    filteredItems.forEach(function (_, i) {
+      addCardToFragment(filteredItems[i], fragment);
+    });
+    catalogCards.appendChild(fragment);
+    if ((catalogCards.querySelectorAll('.catalog__card')).length === 0) {
+      showEmptyFilters();
+    }
+  };
 
   // хэндлер для работы с фильтрами в баре
   var filterBtnsHandler = function (evt) {
@@ -261,6 +287,9 @@
     } else if (target === 'По рейтингу') {
       filterByPopular(window.data.catalog);
     }
+    if ((catalogCards.querySelectorAll('.catalog__card')).length === 0) {
+      showEmptyFilters();
+    }
   };
 
   // показывает количество товаров, подходящих под конкретные фильтры
@@ -280,8 +309,20 @@
         inputs[i].textContent = '(' + (Object.keys(items)).length + ')';
       }
     });
+    rangeCount.textContent = '(' + (Object.keys(items)).length + ')';
   };
 
+  var init = function () {
+    rangeMax.textContent = maxPrice;
+    rangeMin.textContent = minPrice;
+    rangeFill.style.right = minPrice + 'px';
+    rangeFill.style.left = minPrice + 'px';
+    rangeRight.style.left = maxPrice + 'px';
+    rangeLeft.style.left = minPrice + 'px';
+  };
+
+
+  init();
   pinMove(rangeRight);
   pinMove(rangeLeft);
 
