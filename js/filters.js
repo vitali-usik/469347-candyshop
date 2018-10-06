@@ -158,13 +158,25 @@
     catalogCards.appendChild(fragment);
   };
 
-  var filterByMaxPrice = function (items) {
+  /* var filterByMaxPrice = function (items) {
     Object.keys(items)
     .forEach(function (id) {
       Object.keys(items[id].good)
       .sort(function (a, b) {
         return items[id].good.price[b] - items[id].good.price[a];
       });
+    });
+  }; */
+
+  var showEmptyFilters = function () {
+    var catalog = document.querySelector('.catalog__cards-wrap');
+    var notFound = document.querySelector('#empty-filters').content.querySelector('.catalog__empty-filter').cloneNode(true);
+    var btnSubmit = notFound.querySelector('.catalog__show-all');
+    catalog.appendChild(notFound);
+
+    btnSubmit.addEventListener('click', function (evt) {
+      evt.preventDefault();
+      showAll(window.data.catalog);
     });
   };
 
@@ -188,22 +200,10 @@
     } else if (target === 'Показать всё' || target === 'Сначала популярные') {
       showAll(window.data.catalog);
     } else if (target === 'Сначала дорогие') {
-      filterByMaxPrice(window.data.catalog);
+      showEmptyFilters();
     }
   };
 
-
-  /* var showEmptyFilters = function () {
-    var catalog = document.querySelector('.catalog__cards-wrap');
-    var notFound = document.querySelector('#empty-filters').content.querySelector('.catalog__empty-filter').cloneNode(true);
-    var btnSubmit = notFound.querySelector('.catalog__submit');
-    catalog.appendChild(notFound);
-
-    btnSubmit.addEventListener('click', function (evt) {
-      evt.preventDefault();
-      showAll(window.data.catalog);
-    });
-  }; */
   // показывает количество товаров, подходящих под конкретные фильтры
   var initCountKind = function (labels, inputs, items) {
     labels.forEach(function (_, i) {
