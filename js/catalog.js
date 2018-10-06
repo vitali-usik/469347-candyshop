@@ -25,8 +25,6 @@
     .forEach(function (id) {
       if (items[id]['good'].isFavorite) {
         selectedGoods.push(items[id].good);
-      } else {
-        delete selectedGoods[items[id].good];
       }
     });
     arr.forEach(function (_, i) {
@@ -44,8 +42,6 @@
     .forEach(function (id) {
       if (items[id]['good'].amount > 0) {
         availableGoods.push(items[id].good);
-      } else {
-        delete availableGoods[items[id].good];
       }
     });
     arr.forEach(function (_, i) {

@@ -42,7 +42,6 @@
     if (items.good.nutritionFacts.vegetarian) {
       nutritionFacts['Вегетарианское']++;
     }
-    return nutritionFacts;
   };
 
   // добавление класса в зависимости от количества товара
