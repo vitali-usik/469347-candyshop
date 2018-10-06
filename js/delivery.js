@@ -20,7 +20,7 @@
   var tabCourier = document.querySelector('.deliver__courier');
   var tabStore = document.querySelector('.deliver__store');
   var deliverInputs = tabStore.querySelectorAll('.input-btn__input');
-  var deliverLabels = tabStore.querySelectorAll('.input-btn__label');
+  // var deliverLabels = tabStore.querySelectorAll('.input-btn__label');
 
   var deliveryClickHandler = function (evt) {
     var tab = evt.target.id;
