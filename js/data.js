@@ -211,6 +211,7 @@
     nutritionFacts: nutritionFacts,
     sidebar: sidebar,
     itemsLabel: itemsLabel,
-    itemsCount: itemsCount
+    itemsCount: itemsCount,
+    btnSend: btnSend
   };
 })();

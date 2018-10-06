@@ -53,8 +53,6 @@
     getRandomValue: getRandomValue,
     getRandomContent: getRandomContent,
     getRandomBoolean: getRandomBoolean,
-    clearTimeout: clearTimeout,
-    setTimeout: setTimeout,
     debounce: debounce,
     isEscEvent: function (evt, action) {
       if (evt.keyCode === ESC_KEYCODE) {
