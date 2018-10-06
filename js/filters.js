@@ -158,17 +158,70 @@
     catalogCards.appendChild(fragment);
   };
 
-  /* var filterByMaxPrice = function (items) {
+  var compareMax = function (a, b) {
+    if (a.price > b.price) {
+      return -1;
+    } else if (a.price < b.price) {
+      return 1;
+    }
+    return 0;
+  };
+
+  var compareMin = function (a, b) {
+    if (a.price < b.price) {
+      return -1;
+    } else if (a.price > b.price) {
+      return 1;
+    }
+    return 0;
+  };
+
+  var compareRating = function (a, b) {
+    if (a.rating.value > b.rating.value) {
+      return -1;
+    } else if (a.rating.value < b.rating.value) {
+      return 1;
+    } else if (a.rating.value === b.rating.value && a.rating.number > b.rating.number) {
+      return -1;
+    } else if (a.rating.value === b.rating.value && a.rating.number < b.rating.number) {
+      return 1;
+    }
+    return 0;
+  };
+
+  // фильтр по цене
+  var filterByPrice = function (items, value) {
     var priceArr = [];
+    removeItems();
     Object.keys(items)
     .forEach(function (id) {
-      priceArr.push(items[id].good.price);
+      priceArr.push(items[id].good);
     });
-    priceArr.sort(function (a, b) {
-      return b - a;
+    switch (value) {
+      case 'max': priceArr.sort(compareMax);
+        break;
+      case 'min': priceArr.sort(compareMin);
+        break;
+    }
+    priceArr.forEach(function (_, i) {
+      addCardToFragment(priceArr[i], fragment);
     });
-    console.log(priceArr);
-  }; */
+    catalogCards.appendChild(fragment);
+  };
+
+  var filterByPopular = function (items) {
+    var ratingArr = [];
+    removeItems();
+    Object.keys(items)
+    .forEach(function (id) {
+      ratingArr.push(items[id].good);
+    });
+    ratingArr.sort(compareRating);
+    ratingArr.forEach(function (_, i) {
+      addCardToFragment(ratingArr[i], fragment);
+    });
+    catalogCards.appendChild(fragment);
+  };
 
   /* var showEmptyFilters = function () {
     var catalog = document.querySelector('.catalog__cards-wrap');
@@ -202,7 +255,11 @@
     } else if (target === 'Показать всё' || target === 'Сначала популярные') {
       showAll(window.data.catalog);
     } else if (target === 'Сначала дорогие') {
-      // filterByMaxPrice(window.data.catalog);
+      filterByPrice(window.data.catalog, 'max');
+    } else if (target === 'Сначала дешёвые') {
+      filterByPrice(window.data.catalog, 'min');
+    } else if (target === 'По рейтингу') {
+      filterByPopular(window.data.catalog);
     }
   };
 
