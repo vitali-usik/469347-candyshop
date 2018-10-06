@@ -168,7 +168,7 @@
     });
   }; */
 
-  var showEmptyFilters = function () {
+  /* var showEmptyFilters = function () {
     var catalog = document.querySelector('.catalog__cards-wrap');
     var notFound = document.querySelector('#empty-filters').content.querySelector('.catalog__empty-filter').cloneNode(true);
     var btnSubmit = notFound.querySelector('.catalog__show-all');
@@ -178,7 +178,7 @@
       evt.preventDefault();
       showAll(window.data.catalog);
     });
-  };
+  }; */
 
 
   // хэндлер для работы с фильтрами в баре
@@ -200,7 +200,7 @@
     } else if (target === 'Показать всё' || target === 'Сначала популярные') {
       showAll(window.data.catalog);
     } else if (target === 'Сначала дорогие') {
-      showEmptyFilters();
+      // showEmptyFilters();
     }
   };
 
