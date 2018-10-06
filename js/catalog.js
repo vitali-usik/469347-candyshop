@@ -116,7 +116,7 @@
     }
   };
 
-  // функция добавления товара к орзину
+  // функция добавления товара в корзину
   var addToBasket = function (id) {
     var good = Object.assign({}, window.data.catalog[id]['good']);
     good.amount = 0;
@@ -141,6 +141,8 @@
     if (target.classList.contains('card-order__close')) {
       // удаляем элемент из корзины и добавляем значение, которое было в корзине объекту каталога
       catalogItem['good'].amount += currentGood['good'].amount;
+      // удаляем количество элементов в хэдере корзины на количество товара, убранного из корзины
+      headerBasket.textContent -= currentGood['good'].amount;
       // убираем элементы
       basketCards.removeChild(currentGood['card']);
       // обновляем количество товара в наличии
