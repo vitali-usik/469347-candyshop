@@ -42,20 +42,18 @@
     if (items.good.nutritionFacts.vegetarian) {
       nutritionFacts['Вегетарианское']++;
     }
-    return nutritionFacts;
   };
 
   // добавление класса в зависимости от количества товара
   var addClassNameByGoodAvailability = function (element, good) {
     if (good.amount < 6) {
       element.classList.remove('card--in-stock');
-    } else {
-      element.classList.add('card--in-stock');
     }
     if (good.amount >= 1 && good.amount < 5) {
       element.classList.add('card--little');
     } else if (good.amount === 0) {
       element.classList.add('card--soon');
+      element.classList.remove('card--little');
     }
   };
 
