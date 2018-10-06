@@ -26,6 +26,27 @@
   var itemsLabel = sidebar.querySelectorAll('.input-btn__label');
   var itemsCount = document.querySelectorAll('.input-btn__item-count');
 
+  var order = document.querySelector('#order');
+  var inputs = order.querySelectorAll('input');
+  var fieldsets = order.querySelectorAll('fieldset');
+  var btnSend = document.querySelector('.buy__submit-btn');
+
+  // функция блокировки инпутов и филдсетов
+  var inputsDisabled = function (element, items) {
+    element.forEach(function (input) {
+      if (input.classList.contains('toggle-btn__input')) {
+        return;
+      }
+      if (Object.keys(items).length === 0) {
+        input.disabled = true;
+        btnSend.disabled = true;
+      } else {
+        input.disabled = false;
+        btnSend.disabled = false;
+      }
+    });
+  };
+
   // счетчик для различных типов товаров
   var fillTypes = function (items) {
     if (types[items.good.kind]) {
@@ -51,6 +72,7 @@
     }
     if (good.amount >= 1 && good.amount < 5) {
       element.classList.add('card--little');
+      element.classList.remove('card--soon');
     } else if (good.amount === 0) {
       element.classList.add('card--soon');
       element.classList.remove('card--little');
@@ -169,6 +191,11 @@
     error.classList.remove('modal--hidden');
   };
 
+  order.addEventListener('click', function () {
+    inputsDisabled(inputs, window.data.basket);
+    inputsDisabled(fieldsets, window.data.basket);
+  });
+
   window.backend.loadData(successHandler, errorHandler);
 
 
@@ -184,6 +211,7 @@
     nutritionFacts: nutritionFacts,
     sidebar: sidebar,
     itemsLabel: itemsLabel,
-    itemsCount: itemsCount
+    itemsCount: itemsCount,
+    btnSend: btnSend
   };
 })();

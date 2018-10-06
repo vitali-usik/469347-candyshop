@@ -11,6 +11,7 @@
   var cardDate = paymentCard.querySelector('#payment__card-date');
   var cardCvc = paymentCard.querySelector('#payment__card-cvc');
   var cardHolder = paymentCard.querySelector('#payment__cardholder');
+  var btnSend = document.querySelector('.buy__submit-btn');
 
   // проверяем валидность введенного номера карты с помощью алгоритма луна
   var checkCardNumber = function (number) {
@@ -86,13 +87,21 @@
     }
   });
 
+  /* cardCvc.addEventListener('change', function () {
+    if (cardCvc.value < 100) {
+      cardCvc.setCustomValidity('Диапазон значений должен быть от 100 до 999');
+    }
+  }); */
+
   var inputsToggleHandler = function (element) {
     var inputs = element.querySelectorAll('input');
     inputs.forEach(function (input) {
       if (element.classList.contains('visually-hidden')) {
         input.disabled = true;
+        input.required = '';
       } else {
         input.disabled = false;
+        input.required = 'required';
       }
     });
   };
@@ -113,7 +122,12 @@
 
 
   // вешаем обработчик на весь блок и меняем статус при изменении
-  paymentCard.addEventListener('change', changeStatus);
+  paymentCard.addEventListener('change', function () {
+    if (cardStatus.textContent === 'Не определен') {
+      btnSend.disabled = true;
+    }
+    changeStatus();
+  });
 
   // вешаем обработичк на кнопки и переключаем вкладки при клике
   paymentBtn.addEventListener('click', paymentBtnHandler);
