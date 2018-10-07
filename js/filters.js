@@ -217,15 +217,9 @@
   });
 
   // фильтр "показать все"
-  var showAll = window.utils.debounce(function (evt, items) {
+  var showAll = window.utils.debounce(function (items) {
     removeItems();
     uncheckedInput(inputsFilter);
-    var target = evt.target.innerText;
-    var tag = evt.target;
-    var parent = tag.closest('.input-btn');
-    if (target === 'Сначала популярные') {
-      parent.querySelector('.input-btn__input').checked = true;
-    }
     Object.keys(items)
     .forEach(function (id) {
       addCardToFragment(items[id].good, fragment);
@@ -342,8 +336,8 @@
       filterByAvailability(evt, window.data.catalog);
     } else if (target === 'Только избранное') {
       filterBySelected(evt, window.data.catalog);
-    } else if (target === 'Показать всё' || target === 'Сначала популярные') {
-      showAll(evt, window.data.catalog);
+    } else if (target === 'Показать всё') {
+      showAll(window.data.catalog);
     } else if (target === 'Сначала дорогие') {
       filterByPrice(evt, window.data.catalog, 'max');
     } else if (target === 'Сначала дешёвые') {
