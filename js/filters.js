@@ -157,7 +157,7 @@
   });
 
   // фильтр по сахару, глютену и вегетарианству
-  var filteByFact = window.utils.debounce(function (evt, items, fact) {
+  var filterByFact = window.utils.debounce(function (evt, items, fact) {
     var tag = evt.target;
     var parent = tag.closest('.input-btn');
     var input = parent.querySelector('.input-btn__input');
@@ -333,11 +333,11 @@
     if (target === 'Мороженое' || target === 'Газировка' || target === 'Жевательная резинка' || target === 'Мармелад' || target === 'Зефир') {
       filterByKind(evt, window.data.catalog);
     } else if (target === 'Без сахара') {
-      filteByFact(evt, window.data.catalog, 'sugar');
+      filterByFact(evt, window.data.catalog, 'sugar');
     } else if (target === 'Безглютеновое') {
-      filteByFact(evt, window.data.catalog, 'gluten');
+      filterByFact(evt, window.data.catalog, 'gluten');
     } else if (target === 'Вегетарианское') {
-      filteByFact(evt, window.data.catalog, 'vegetarian');
+      filterByFact(evt, window.data.catalog, 'vegetarian');
     } else if (target === 'В наличии') {
       filterByAvailability(evt, window.data.catalog);
     } else if (target === 'Только избранное') {
