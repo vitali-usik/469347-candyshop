@@ -6,6 +6,14 @@
   var form = document.querySelector('#form-order');
   var closeSuccess = success.querySelector('.modal__close');
   var closeError = error.querySelector('.modal__close');
+  var order = document.querySelector('#order');
+  var orderInputs = order.querySelectorAll('input');
+
+  var formReset = function (items) {
+    items.forEach(function (item) {
+      item.value = '';
+    });
+  };
 
   var closeEscHandlerSuccess = function (evt) {
     window.utils.isEscEvent(evt, closeModalSuccess);
@@ -48,6 +56,7 @@
   form.addEventListener('submit', function (evt) {
     window.backend.saveData(new FormData(form), successHandler, errorHandler);
     evt.preventDefault();
+    formReset(orderInputs);
   });
   // обработка успешной отправки формы
   var successHandler = function () {

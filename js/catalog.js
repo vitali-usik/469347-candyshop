@@ -150,16 +150,18 @@
       basketCards.removeChild(currentGood['card']);
       // обновляем количество товара в наличии
       updateStockAmount(window.data.catalog, window.data.itemsLabel);
+      window.data.addClassNameByGoodAvailability(catalogItem['card'], catalogItem['good']);
       // удаляем объект
       delete window.data.basket[goodId];
-      window.data.addClassNameByGoodAvailability(catalogItem['card'], catalogItem['good']);
     } else if (target.classList.contains('card-order__btn--increase') && catalogItem['good'].amount > 0) {
       currentGood['card'].querySelector('.card-order__count').value++;
+      headerBasket.textContent++;
       updateAmount(goodId, 1);
       updateStockAmount(window.data.catalog, window.data.itemsLabel);
       window.data.addClassNameByGoodAvailability(catalogItem['card'], catalogItem['good']);
     } else if (target.classList.contains('card-order__btn--decrease')) {
       currentGood['card'].querySelector('.card-order__count').value--;
+      headerBasket.textContent--;
       updateAmount(goodId, -1);
       updateStockAmount(window.data.catalog, window.data.itemsLabel);
       if (currentGood['card'].querySelector('.card-order__count').value === '0') {
