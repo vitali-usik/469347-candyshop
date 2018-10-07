@@ -7,35 +7,42 @@
   var closeSuccess = success.querySelector('.modal__close');
   var closeError = error.querySelector('.modal__close');
 
-  var closeEscHandler = function (evt) {
-    window.utils.isEscEvent(evt, closeModal);
+  var closeEscHandlerSuccess = function (evt) {
+    window.utils.isEscEvent(evt, closeModalSuccess);
   };
 
-
-  var closeModal = function (evt) {
-    evt.preventDefault();
-    evt.currentTarget.closest('.modal').classList.add('modal--hidden');
-    document.removeEventListener('keydown', closeEscHandler);
+  var closeModalSuccess = function () {
+    success.classList.add('modal--hidden');
+    document.removeEventListener('keydown', closeEscHandlerSuccess);
   };
 
-  closeSuccess.addEventListener('click', closeModal);
+  closeSuccess.addEventListener('click', closeModalSuccess);
 
   closeSuccess.addEventListener('keydown', function (evt) {
-    window.utils.isEnterEvent(evt, closeModal);
+    window.utils.isEnterEvent(evt, closeModalSuccess);
   });
 
   closeSuccess.addEventListener('focus', function (evt) {
-    window.utils.isEnterEvent(evt, closeModal);
+    window.utils.isEnterEvent(evt, closeModalSuccess);
   });
 
-  closeError.addEventListener('click', closeModal);
+  var closeEscHandlerError = function (evt) {
+    window.utils.isEscEvent(evt, closeModalError);
+  };
+
+  var closeModalError = function () {
+    error.classList.add('modal--hidden');
+    document.removeEventListener('keydown', closeEscHandlerError);
+  };
+
+  closeError.addEventListener('click', closeModalError);
 
   closeError.addEventListener('keydown', function (evt) {
-    window.utils.isEnterEvent(evt, closeModal);
+    window.utils.isEnterEvent(evt, closeModalError);
   });
 
   closeError.addEventListener('focus', function (evt) {
-    window.utils.isEnterEvent(evt, closeModal);
+    window.utils.isEnterEvent(evt, closeModalError);
   });
 
   form.addEventListener('submit', function (evt) {
@@ -45,11 +52,13 @@
   // обработка успешной отправки формы
   var successHandler = function () {
     success.classList.remove('modal--hidden');
+    document.addEventListener('keydown', closeEscHandlerSuccess);
   };
 
   // обработка ошибок
   var errorHandler = function () {
     error.classList.remove('modal--hidden');
+    document.addEventListener('keydown', closeEscHandlerError);
   };
 
 })();
