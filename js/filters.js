@@ -19,7 +19,7 @@
   var fragment = document.createDocumentFragment();
 
   var filteredByKind = [];
-  var filteredByType = [];
+  // var filteredByType = [];
 
   var uncheckedInput = function (items) {
     items.forEach(function (item) {
@@ -146,14 +146,13 @@
       return;
     } else if (filteredByKind.length === 0) {
       Object.keys(items)
-    .forEach(function (id) {
-      if (items[id].good.kind === target) {
-        filteredByKind.push(items[id].good);
-        addCardToFragment(items[id].good, fragment);
-        catalogCards.appendChild(fragment);
-      }
-      console.log(filteredByKind);
-    });
+      .forEach(function (id) {
+        if (items[id].good.kind === target) {
+          filteredByKind.push(items[id].good);
+          addCardToFragment(items[id].good, fragment);
+        }
+      });
+      catalogCards.appendChild(fragment);
     }
   });
 
