@@ -2,25 +2,24 @@
 
 (function () {
   var PICTURES = {
-    'Академическая': 'academicheskaya.jpg',
-    'Василеостровская': 'vasileostrovskaya.jpg',
-    'Черная речка': 'rechka.jpg',
-    'Петроградская': 'petrogradskaya.jpg',
-    'Пролетарская': 'proletarskaya.jpg',
-    'Площадь Восстания': 'vostaniya.jpg',
-    'Проспект Просвещения': 'prosvesheniya.jpg',
-    'Фрунзенская': 'frunzenskaya.jpg',
-    'Чернышевская': 'chernishevskaya.jpg',
-    'Технологический институт': 'tehinstitute.jpg'
+    'Академическая': 'academicheskaya',
+    'Василеостровская': 'vasileostrovskaya',
+    'Черная речка': 'rechka',
+    'Петроградская': 'petrogradskaya',
+    'Пролетарская': 'proletarskaya',
+    'Площадь Восстания': 'vostaniya',
+    'Проспект Просвещения': 'prosvesheniya',
+    'Фрунзенская': 'frunzenskaya',
+    'Чернышевская': 'chernishevskaya',
+    'Технологический институт': 'tehinstitute'
   };
 
   var PATH = 'img/map/';
+  var EXTEND = '.jpg';
 
   var deliveryBlock = document.querySelector('.deliver__toggle');
   var tabCourier = document.querySelector('.deliver__courier');
   var tabStore = document.querySelector('.deliver__store');
-  var deliverInputs = tabStore.querySelectorAll('.input-btn__input');
-  // var deliverLabels = tabStore.querySelectorAll('.input-btn__label');
 
   var deliveryClickHandler = function (evt) {
     var tab = evt.target.id;
@@ -39,22 +38,19 @@
     window.payment.inputsToggleHandler(tabCourier);
   };
 
-  var changeMap = function (evt, inputs) {
+  // функция изменения карты
+  var changeMap = function (evt) {
     evt.preventDefault();
     var target = evt.target;
     var picture = tabStore.querySelector('.deliver__store-map-img');
-    for (var i = 0; i < inputs.length; i++) {
-      if (PICTURES[target.innerText]) {
-        inputs[i].checked = true;
-        picture.src = PATH + PICTURES[target.innerText];
-        picture.alt = PICTURES[target.innerText];
-      }
+    if (PICTURES[target.innerText]) {
+      picture.src = PATH + PICTURES[target.innerText] + EXTEND;
+      picture.alt = PICTURES[target.innerText];
+      tabStore.querySelector('#store-' + PICTURES[target.innerText]).checked = true;
     }
   };
 
-  tabStore.addEventListener('click', function (evt) {
-    changeMap(evt, deliverInputs);
-  });
+  tabStore.addEventListener('click', changeMap);
 
   window.payment.inputsToggleHandler(tabCourier);
 
