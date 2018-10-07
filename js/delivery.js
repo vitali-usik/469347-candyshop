@@ -29,9 +29,11 @@
     if (tab === 'deliver__courier') {
       tabStore.classList.add('visually-hidden');
       tabCourier.classList.remove('visually-hidden');
+      window.order.formReset(tabStore);
     } else {
       tabCourier.classList.add('visually-hidden');
       tabStore.classList.remove('visually-hidden');
+      window.order.formReset(tabCourier);
     }
 
     window.payment.inputsToggleHandler(tabStore);

@@ -14,8 +14,18 @@
   var rangeCount = range.querySelector('.range__count');
 
   var catalogCards = document.querySelector('.catalog__cards');
+  var inputsFilter = sidebar.querySelectorAll('input');
 
   var fragment = document.createDocumentFragment();
+
+  var filteredByKind = [];
+  // var filteredByType = [];
+
+  var uncheckedInput = function (items) {
+    items.forEach(function (item) {
+      item.checked = false;
+    });
+  };
 
   // удаление всех карточек
   var removeItems = function () {
@@ -30,10 +40,11 @@
     var btnSubmit = notFound.querySelector('.catalog__show-all');
     removeItems();
     catalogCards.appendChild(notFound);
+    uncheckedInput(inputsFilter);
 
     btnSubmit.addEventListener('click', function (evt) {
       evt.preventDefault();
-      showAll(window.data.catalog);
+      showAll(evt, window.data.catalog);
     });
   };
 
@@ -119,18 +130,42 @@
   // фильтр по типу продукта
   var filterByKind = window.utils.debounce(function (evt, items) {
     var target = evt.target.innerText;
+    var tag = evt.target;
+    var parent = tag.closest('.input-btn');
+    var input = parent.querySelector('.input-btn__input');
+    if (input.checked) {
+      input.checked = false;
+    } else {
+      input.checked = true;
+    }
     removeItems();
-    Object.keys(items)
-    .forEach(function (id) {
-      if (items[id].good.kind === target) {
-        addCardToFragment(items[id].good, fragment);
-      }
-    });
-    catalogCards.appendChild(fragment);
+    // так как товар имеет ОДИН тип продукта, если он ранее был уже отфильтрован по какому-либо типу, показываем блок с пустым фильтром и выходим из функции, другое поведение нелогично и в тз иное не прописано. Написано, что можно выбрать одновременно два типа на фильтрацию, но дальнейшее поведение не указано
+    if (filteredByKind.length > 0) {
+      showEmptyFilters();
+      filteredByKind = [];
+      return;
+    } else if (filteredByKind.length === 0) {
+      Object.keys(items)
+      .forEach(function (id) {
+        if (items[id].good.kind === target) {
+          filteredByKind.push(items[id].good);
+          addCardToFragment(items[id].good, fragment);
+        }
+      });
+      catalogCards.appendChild(fragment);
+    }
   });
 
   // фильтр по сахару, глютену и вегетарианству
-  var filteByFact = window.utils.debounce(function (items, fact) {
+  var filterByFact = window.utils.debounce(function (evt, items, fact) {
+    var tag = evt.target;
+    var parent = tag.closest('.input-btn');
+    var input = parent.querySelector('.input-btn__input');
+    if (input.checked) {
+      input.checked = false;
+    } else {
+      input.checked = true;
+    }
     removeItems();
     Object.keys(items)
         .forEach(function (id) {
@@ -144,11 +179,15 @@
   });
 
   // фильтр по наличию
-  var filterByAvailability = window.utils.debounce(function (items) {
+  var filterByAvailability = window.utils.debounce(function (evt, items) {
     removeItems();
+    uncheckedInput(inputsFilter);
+    var tag = evt.target;
+    var parent = tag.closest('.input-btn');
     Object.keys(items)
     .forEach(function (id) {
       if (items[id].good.amount > 0) {
+        parent.querySelector('.input-btn__input').checked = true;
         addCardToFragment(items[id].good, fragment);
       }
     });
@@ -159,10 +198,14 @@
   });
 
   // фильтр по избранному
-  var filterBySelected = window.utils.debounce(function (items) {
+  var filterBySelected = window.utils.debounce(function (evt, items) {
     removeItems();
+    uncheckedInput(inputsFilter);
+    var tag = evt.target;
+    var parent = tag.closest('.input-btn');
     Object.keys(items)
     .forEach(function (id) {
+      parent.querySelector('.input-btn__input').checked = true;
       if (items[id].good.isFavorite) {
         addCardToFragment(items[id].good, fragment);
       }
@@ -176,6 +219,7 @@
   // фильтр "показать все"
   var showAll = window.utils.debounce(function (items) {
     removeItems();
+    uncheckedInput(inputsFilter);
     Object.keys(items)
     .forEach(function (id) {
       addCardToFragment(items[id].good, fragment);
@@ -215,9 +259,12 @@
   };
 
   // фильтр по цене
-  var filterByPrice = window.utils.debounce(function (items, value) {
+  var filterByPrice = window.utils.debounce(function (evt, items, value) {
     var priceArr = [];
+    var tag = evt.target;
+    var parent = tag.closest('.input-btn');
     removeItems();
+    uncheckedInput(inputsFilter);
     Object.keys(items)
     .forEach(function (id) {
       priceArr.push(items[id].good);
@@ -229,15 +276,20 @@
         break;
     }
     priceArr.forEach(function (_, i) {
+      parent.querySelector('.input-btn__input').checked = true;
       addCardToFragment(priceArr[i], fragment);
     });
     catalogCards.appendChild(fragment);
   });
 
   // фильтр по популярности
-  var filterByPopular = window.utils.debounce(function (items) {
+  var filterByPopular = window.utils.debounce(function (evt, items) {
     var ratingArr = [];
     removeItems();
+    var tag = evt.target;
+    var parent = tag.closest('.input-btn');
+    parent.querySelector('.input-btn__input').checked = true;
+    uncheckedInput(inputsFilter);
     Object.keys(items)
     .forEach(function (id) {
       ratingArr.push(items[id].good);
@@ -275,23 +327,23 @@
     if (target === 'Мороженое' || target === 'Газировка' || target === 'Жевательная резинка' || target === 'Мармелад' || target === 'Зефир') {
       filterByKind(evt, window.data.catalog);
     } else if (target === 'Без сахара') {
-      filteByFact(window.data.catalog, 'sugar');
+      filterByFact(evt, window.data.catalog, 'sugar');
     } else if (target === 'Безглютеновое') {
-      filteByFact(window.data.catalog, 'gluten');
+      filterByFact(evt, window.data.catalog, 'gluten');
     } else if (target === 'Вегетарианское') {
-      filteByFact(window.data.catalog, 'vegetarian');
+      filterByFact(evt, window.data.catalog, 'vegetarian');
     } else if (target === 'В наличии') {
-      filterByAvailability(window.data.catalog);
+      filterByAvailability(evt, window.data.catalog);
     } else if (target === 'Только избранное') {
-      filterBySelected(window.data.catalog);
-    } else if (target === 'Показать всё' || target === 'Сначала популярные') {
+      filterBySelected(evt, window.data.catalog);
+    } else if (target === 'Показать всё') {
       showAll(window.data.catalog);
     } else if (target === 'Сначала дорогие') {
-      filterByPrice(window.data.catalog, 'max');
+      filterByPrice(evt, window.data.catalog, 'max');
     } else if (target === 'Сначала дешёвые') {
-      filterByPrice(window.data.catalog, 'min');
+      filterByPrice(evt, window.data.catalog, 'min');
     } else if (target === 'По рейтингу') {
-      filterByPopular(window.data.catalog);
+      filterByPopular(evt, window.data.catalog);
     }
   };
 
