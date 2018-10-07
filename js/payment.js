@@ -35,7 +35,7 @@
     var isNumberValid = checkCardNumber(cardNumber.value);
     var isValidCvc = parseInt(cardCvc.value, 10) > 99 && parseInt(cardCvc.value, 10) < 1000;
     var isCardValid = cardNumber.validity.valid && cardDate.validity.valid && cardCvc.validity.valid && cardHolder.validity.valid && isNumberValid && isValidCvc;
-    var statusText = isCardValid === true ? 'Одобрен' : 'Не определен';
+    var statusText = isCardValid ? 'Одобрен' : 'Не определен';
     cardStatus.textContent = statusText;
   };
 
