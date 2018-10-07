@@ -18,8 +18,8 @@
 
   var fragment = document.createDocumentFragment();
 
-  /*  var filteredByKind = [];
-  var filteredByType = []; */
+  var filteredByKind = [];
+  var filteredByType = [];
 
   var uncheckedInput = function (items) {
     items.forEach(function (item) {
@@ -44,7 +44,7 @@
 
     btnSubmit.addEventListener('click', function (evt) {
       evt.preventDefault();
-      showAll(window.data.catalog);
+      showAll(evt, window.data.catalog);
     });
   };
 
@@ -139,23 +139,22 @@
       input.checked = true;
     }
     removeItems();
-    Object.keys(items)
+    // так как товар имеет ОДИН тип продукта, если он ранее был уже отфильтрован по какому-либо типу, показываем блок с пустым фильтром и выходим из функции, другое поведение нелогично и в тз иное не прописано. Написано, что можно выбрать одновременно два типа на фильтрацию, но дальнейшее поведение не указано
+    if (filteredByKind.length > 0) {
+      showEmptyFilters();
+      filteredByKind = [];
+      return;
+    } else if (filteredByKind.length === 0) {
+      Object.keys(items)
     .forEach(function (id) {
-      // так как товар имеет ОДИН тип продукта, если он ранее был уже отфильтрован по какому-либо типу, показываем блок с пустым фильтром и выходим из функции, другое поведение нелогично и в тз иное не прописано. Написано, что можно выбрать одновременно два типа на фильтрацию, но дальнейшее поведение не указано
-      if (items[id].good.kind === target && !items[id].good.isFiltered) {
-        // filteredByKind.push(items[id].good);
-        items[id].good.isFiltered = true;
+      if (items[id].good.kind === target) {
+        filteredByKind.push(items[id].good);
         addCardToFragment(items[id].good, fragment);
         catalogCards.appendChild(fragment);
-        return;
-      } else if (items[id].good.isFiltered) {
-        showEmptyFilters();
-        items[id].good.isFiltered = false;
-        return;
       }
-      console.log(items[id].good.isFiltered);
+      console.log(filteredByKind);
     });
-
+    }
   });
 
   // фильтр по сахару, глютену и вегетарианству

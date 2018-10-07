@@ -115,8 +115,6 @@
 
     cardElement.querySelector('.card__title').textContent = item.name;
 
-    item.isFiltered = false;
-
     var price = cardElement.querySelector('.card__price');
     price.childNodes[PRICE_AMOUNT_NODE_INDEX].textContent = item.price + ' ';
     price.childNodes[PRICE_WEIGHT_NODE_INDEX].textContent = '/ ' + item.weight + ' Г';
