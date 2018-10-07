@@ -112,6 +112,7 @@
       paymentCash.classList.add('visually-hidden');
       paymentCard.classList.remove('visually-hidden');
     }
+    window.order.formReset(paymentCard);
     inputsToggleHandler(paymentCard);
   };
 

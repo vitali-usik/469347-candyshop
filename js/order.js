@@ -7,11 +7,11 @@
   var closeSuccess = success.querySelector('.modal__close');
   var closeError = error.querySelector('.modal__close');
   var order = document.querySelector('#order');
-  var orderInputs = order.querySelectorAll('input');
 
-  var formReset = function (items) {
-    items.forEach(function (item) {
-      item.value = '';
+  var formReset = function (element) {
+    var inputs = element.querySelectorAll('input');
+    inputs.forEach(function (input) {
+      input.value = '';
     });
   };
 
@@ -56,7 +56,7 @@
   form.addEventListener('submit', function (evt) {
     window.backend.saveData(new FormData(form), successHandler, errorHandler);
     evt.preventDefault();
-    formReset(orderInputs);
+    formReset(order);
   });
   // обработка успешной отправки формы
   var successHandler = function () {
@@ -68,6 +68,10 @@
   var errorHandler = function () {
     error.classList.remove('modal--hidden');
     document.addEventListener('keydown', closeEscHandlerError);
+  };
+
+  window.order = {
+    formReset: formReset
   };
 
 })();
