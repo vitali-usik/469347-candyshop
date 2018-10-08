@@ -18,7 +18,8 @@
 
   var activeFilters = {
     kind: [],
-    facts: []
+    facts: [],
+    sort: ''
   };
 
   var fragment = document.createDocumentFragment();
@@ -181,6 +182,7 @@
 
   var applyFilters = function (items, target) {
     var current;
+    var filtered;
     Object.keys(items)
       .forEach(function (id) {
         current = items[id].good;
@@ -197,9 +199,23 @@
         ) {
           // console.log('current', current);
           // console.log('_________________________________');
-          addCardToFragment(current, fragment);
+          // addCardToFragment(current, fragment);
+          filtered.add(current);
         }
       });
+    
+      // TODO вынести в отдельную функцию начиная здесь
+      if (activeFilters.sort) {
+        filtered.sort(function(a, b) {
+          // применить сортировку
+        });
+      }
+      
+      filtered.forEach(function(item) {
+        addCardToFragment(current, fragment);
+      });
+      // TODO вынести в отдельную функцию и заканчивая здесь
+    
       catalogCards.appendChild(fragment);
   }
 
