@@ -16,6 +16,12 @@
   var catalogCards = document.querySelector('.catalog__cards');
   var inputsFilter = sidebar.querySelectorAll('input');
 
+  var activeFilters = {
+    kind: [],
+    facts: [],
+    sort: ''
+  };
+
   var fragment = document.createDocumentFragment();
 
   var filteredByKind = [];
@@ -127,55 +133,122 @@
     frag.appendChild(card);
   };
 
+  var setCheckedOnFilter = function (tag) {
+    var parent = tag.closest('.input-btn');
+    var input = parent.querySelector('.input-btn__input');
+    if (input.checked) {
+      input.checked = false;
+    } else {
+      input.checked = true;
+    }
+  }
+
   // фильтр по типу продукта
   var filterByKind = window.utils.debounce(function (evt, items) {
     var target = evt.target.innerText;
-    var tag = evt.target;
-    var parent = tag.closest('.input-btn');
-    var input = parent.querySelector('.input-btn__input');
-    if (input.checked) {
-      input.checked = false;
-    } else {
-      input.checked = true;
+    setCheckedOnFilter(evt.target);
+
+    if (activeFilters.kind.length === 0) {
+      activeFilters.kind.push(target);
+    } else if (activeFilters.kind.indexOf(target) !== -1 && activeFilters.kind.length === 1) {
+      activeFilters.kind = [];
+    } else if (activeFilters.kind.indexOf(target) !== -1 && activeFilters.kind.length > 1) {
+      activeFilters.kind = activeFilters.kind.filter(function(item) {
+        return item !== target;
+      });
+    } else if (activeFilters.kind.indexOf(target) === -1 && activeFilters.kind.length > 0) {
+      activeFilters.kind.push(target);
     }
+
     removeItems();
-    // так как товар имеет ОДИН тип продукта, если он ранее был уже отфильтрован по какому-либо типу, показываем блок с пустым фильтром и выходим из функции, другое поведение нелогично и в тз иное не прописано. Написано, что можно выбрать одновременно два типа на фильтрацию, но дальнейшее поведение не указано
-    if (filteredByKind.length > 0) {
-      showEmptyFilters();
-      filteredByKind = [];
-      return;
-    } else if (filteredByKind.length === 0) {
-      Object.keys(items)
+    applyFilters(items, target);
+  });
+
+  var checkIfExistInFacts = function (currentFacts) {
+    var isGlutenActive = activeFilters.facts.indexOf('gluten') !== -1;
+    var isSugarActive = activeFilters.facts.indexOf('sugar') !== -1;
+    var isVeganActive = activeFilters.facts.indexOf('vegetarian') !== -1;
+
+    var gluten = isGlutenActive && !currentFacts.gluten;
+    var sugar = isSugarActive && !currentFacts.sugar;
+    var vegan = isVeganActive && currentFacts.vegetarian;
+
+    return (
+      (!isGlutenActive || gluten) &&
+      (!isSugarActive || sugar) &&
+      (!isVeganActive || vegan)
+    )
+  }
+
+  var applyFilters = function (items, target) {
+    var current;
+    var filtered;
+    Object.keys(items)
       .forEach(function (id) {
-        if (items[id].good.kind === target) {
-          filteredByKind.push(items[id].good);
-          addCardToFragment(items[id].good, fragment);
+        current = items[id].good;
+
+        var isEmptyKind = activeFilters.kind.length === 0;
+        var isExistInKind = !isEmptyKind && activeFilters.kind.indexOf(current.kind) !== -1;
+
+        var isEmptyFacts = activeFilters.facts.length === 0;
+        var isExistInFacts = !isEmptyFacts && checkIfExistInFacts(current.nutritionFacts);
+
+        if (
+          (isEmptyKind || isExistInKind) &&
+          (isEmptyFacts || isExistInFacts)
+        ) {
+          // console.log('current', current);
+          // console.log('_________________________________');
+          // addCardToFragment(current, fragment);
+          filtered.add(current);
         }
       });
+    
+      // TODO вынести в отдельную функцию начиная здесь
+      if (activeFilters.sort) {
+        filtered.sort(function(a, b) {
+          // применить сортировку
+        });
+      }
+      
+      filtered.forEach(function(item) {
+        addCardToFragment(current, fragment);
+      });
+      // TODO вынести в отдельную функцию и заканчивая здесь
+    
       catalogCards.appendChild(fragment);
+  }
+
+  var getTransformedFact = function (fact) {
+    if (fact === 'Без сахара') {
+      return 'sugar';
+    } else if (fact === 'Вегетарианское') {
+      return 'vegetarian';
+    } else if (fact === 'Безглютеновое') {
+      return 'gluten';
     }
-  });
+  }
 
   // фильтр по сахару, глютену и вегетарианству
   var filterByFact = window.utils.debounce(function (evt, items, fact) {
-    var tag = evt.target;
-    var parent = tag.closest('.input-btn');
-    var input = parent.querySelector('.input-btn__input');
-    if (input.checked) {
-      input.checked = false;
-    } else {
-      input.checked = true;
+    var target = getTransformedFact(evt.target.innerText);
+    setCheckedOnFilter(evt.target);
+
+    if (activeFilters.facts.length === 0) {
+      activeFilters.facts.push(target);
+    } else if (activeFilters.facts.indexOf(target) !== -1 && activeFilters.facts.length === 1) {
+      activeFilters.facts = [];
+    } else if (activeFilters.facts.indexOf(target) !== -1 && activeFilters.facts.length > 1) {
+      activeFilters.facts = activeFilters.facts.filter(function(item) {
+        return item !== target;
+      });
+    } else if (activeFilters.facts.indexOf(target) === -1 && activeFilters.facts.length > 0) {
+      activeFilters.facts.push(target);
     }
+
+    // console.log('activeFilters', activeFilters.facts);
     removeItems();
-    Object.keys(items)
-        .forEach(function (id) {
-          var isVegetarian = (fact === 'vegetarian' && items[id].good.nutritionFacts[fact]);
-          var noSugarOrGluten = (fact !== 'vegetarian' && !items[id].good.nutritionFacts[fact]);
-          if (isVegetarian || noSugarOrGluten) {
-            addCardToFragment(items[id].good, fragment);
-          }
-        });
-    catalogCards.appendChild(fragment);
+    applyFilters(items, target);
   });
 
   // фильтр по наличию
